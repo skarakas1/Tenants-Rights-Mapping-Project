@@ -1,0 +1,48 @@
+body{
+    font-family: 'Montserrat', sans-serif;
+    display:grid;
+    grid-template-areas: 
+    "main"
+    "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: 95vh 5vh;
+}
+
+
+/*BUTTON STYLES*/
+.btn-group button {
+    background-color: #968e856c; /* Green background */
+    border: 1px solid lightslategray; /* Green border */
+    color: whitesmoke; /* White text */
+    padding: 10px 24px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    width: 50%; /* Set a width if needed */
+    display: block; /* Make the buttons appear below each other */
+  }
+  
+  .btn-group button:not(:last-child) {
+    border-bottom: none; /* Prevent double borders */
+  }
+  
+  /* Add a background color on hover */
+  .btn-group button:hover {
+    background-color: #474440;
+  }
+
+
+
+
+
+/*CENTER-ING STYLES -- FLEXBOX*/
+  .box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .box div {
+    width: 200px;
+    height: 200px;
+    border-bottom: 3px solid #474440;
+  }
+

@@ -1,0 +1,60 @@
+body{
+    font-family: 'Montserrat', sans-serif;
+    display:grid;
+    grid-template-areas: 
+    "header"
+    "survey"
+    "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 85vh 5vh;
+}
+
+header{
+    margin-left: 30px;
+    margin-right: 30px;
+    grid-area: header;
+    color: #474440;
+    text-shadow: 1px 1px linen;
+    border-bottom: 2px solid #474440;
+}
+#home{
+    float:right;
+}
+a{
+    color:#474440;
+}
+
+a:link{
+    text-decoration: none;
+}
+a:visited{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+    background-color:lightgrey;
+}
+a:active{
+    text-decoration: none;
+}
+#survey {
+    border-radius: .5em;
+    padding: .3em;
+    grid-area: survey;
+    overflow: hidden;
+    /* 16:9 aspect ratio */
+    padding-top: 0%;
+    position: relative;
+}
+#survey iframe {
+    border: 0;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+ }
+ footer{
+     grid-area: footer;
+     color: #474440;
+ }
