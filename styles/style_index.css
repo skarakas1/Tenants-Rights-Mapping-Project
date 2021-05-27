@@ -67,9 +67,59 @@ p{
     grid-area: map;
 } 
 
+#survey iframe {
+   border: 0;
+   height: 100%;
+   left: 0;
+   position: absolute;
+   top: 0;
+   width: 100%;
+}
+@media all and (min-width: 701px){
 
+    button{
+        transition: height 2s;
+        letter-spacing: .3rem;
+    }
+    button:hover{
+        background-color: rgba(182, 46, 153, 0);
+        color:rgb(234, 0, 255);
+        font-stretch: extra-expanded;
+        font-style: italic;
+        height: 7em;
+    }
+}
+
+@media all and (max-width:700px){
+    body{
+        grid-template-columns: 95% 5%;
+        grid-template-rows:none;
+        grid-auto-rows: minmax(10px,auto);
+        grid-template-areas: 
+            "header ." 
+            "map ."
+            "content ." 
+            "side ." 
+            "footer .";
+        gap: 40px;
+    }
+    #contents{
+        border-radius: .5em;
+    }
+    #map{
+        height:60vh;
+    }
+    button{
+        height: 3em;
+    }
+    button:active {
+        background-color: rgba(182, 46, 153, 0);
+        color:rgb(234, 0, 255);
+        font-style: italic;
+    }
 footer{
     border-top: 1px solid black;
     grid-area: footer;
     color: #474440;
+}
 }
