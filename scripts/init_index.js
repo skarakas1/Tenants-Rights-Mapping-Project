@@ -3,7 +3,12 @@
 
 //create leaflet map and set params
 
-const map = L.map('map', {scrollWheelZoom: false}).setView([33.9, -118.2437], 10);
+//const map = L.map('map', {scrollWheelZoom: false}).setView([33.9, -118.2437], 10);
+const map = L.map('map', {
+    center: [33.9, -118.2437],
+    zoom: 10,
+    scrollWheelZoom: false
+});
 //openstreetmap attribution
 //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -119,7 +124,7 @@ function addDataBasedonField(data){
     //determine if user is renter
     if (renter == "Yes"){
         //set marker color
-        circleOptions.fillColor = "cyan";
+        circleOptions.fillColor = "orange";
         //use leaflet API to add marker w/ info in popup
         addPop(data, currentRenterLayer,
             '<h2>Timestamp</h2>' +
