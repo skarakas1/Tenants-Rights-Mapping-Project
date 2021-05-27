@@ -23,7 +23,7 @@ header{
     grid-template-areas: 
     "title navigation"
     ;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #474440;
 }
 
 #title{
@@ -44,7 +44,7 @@ header{
 
 ul{
     float:right;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #474440;
 }
 
 li{
@@ -92,7 +92,6 @@ p{
 
 footer{
 
-    border-top: 1px solid black;
     grid-area: footer;
     color: #474440;
 }
