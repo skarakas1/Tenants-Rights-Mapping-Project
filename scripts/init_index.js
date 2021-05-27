@@ -76,7 +76,7 @@ function processData(theData){
     insecureLayer.addTo(map);
     hasResourceLayer.addTo(map);
     
-    map.fitBounds(allLayers.getBounds());
+    //map.fitBounds(allLayers.getBounds());
 }
 
 
