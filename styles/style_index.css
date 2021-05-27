@@ -67,9 +67,6 @@ p{
     grid-area: map;
 } 
 
-
-}
-
 #survey iframe {
    border: 0;
    height: 100%;
@@ -124,4 +121,5 @@ footer{
     border-top: 1px solid black;
     grid-area: footer;
     color: #474440;
+}
 }

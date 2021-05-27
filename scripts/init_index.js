@@ -19,6 +19,22 @@ let Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alida
 //set basemap
 Stadia_AlidadeSmooth.addTo(map);
 
+//create Leaflet feature group layers
+let currentRenterLayer = L.featureGroup();
+let notRenterLayer = L.featureGroup();
+let harrassmentLayer = L.featureGroup();
+let insecureLayer = L.featureGroup();
+let hasResourceLayer = L.featureGroup();
+
+// define layers
+let layers = {
+    "Currently renting": currentRenterLayer,
+    "Not currently renting": notRenterLayer,
+    "Stories about tenant harassment": harrassmentLayer,
+    "Stories about housing insecurity": insecureLayer,
+    "Has resource to share": hasResourceLayer
+}
+
 //get the datas as json
 const url = "https://spreadsheets.google.com/feeds/list/16F-aIZ0PutDur9tXTy92JD7rFrHd3YHZB1wCsh9Gs04/on8014x/public/values?alt=json"
 fetch(url)
@@ -49,35 +65,32 @@ function processData(theData){
     // lets see what the data looks like when its clean!
     console.log(formattedData)
     //send to old data function
-    //formattedData.forEach(sortOldData)
+    formattedData.forEach(sortOldData)
+
+    //make the map zoom to the extent of markers
+    let allLayers = L.featureGroup([currentRenterLayer, notRenterLayer, harrassmentLayer, insecureLayer, hasResourceLayer]);
+    // Initially check all of the layers!
+    currentRenterLayer.addTo(map);
+    notRenterLayer.addTo(map);
+    harrassmentLayer.addTo(map);
+    insecureLayer.addTo(map);
+    hasResourceLayer.addTo(map);
+    
+    map.fitBounds(allLayers.getBounds());
 }
 
-//function to sort out old data from 1st survey iteration
-// function sortOldData(data){
-//     if (data.timestamp != ''){
-//         //send to function to sort based on response, add marker and popup
-//         addDataBasedonField(data);
-//         //make a button
-//         createButtons(data.lat,data.lng,data.location)
-//         return data.timestamp
-//     }
-// }
+// function to sort out old data from 1st survey iteration
+function sortOldData(data){
+    if (data.timestamp != ''){
+        //send to function to sort based on response, add marker and popup
+        addDataBasedonField(data);
+        //make a button
+        createButtons(data.lat,data.lng,data.location)
+        return data.timestamp
+    }
+}
 
-//turn data values into variables
-let time = data.timestamp
-let zip = data.whatisyourcurrentormostrecentzipcode
-let renter = data.areyoucurrentlyarenter
-let addr = data.didtheseexperiencestakeplaceatyourcurrentormostrecentaddress
-let harassment = data.doyoufeelthatyouhavefacedanytypeoftenantharassment
-let secure = data.doyoufeelthatyourhousingsituationissecure
-let resources = data.isthereanythingyouwouldliketosharethathashelpedyouinyourhousingharassmentsituationthatyouwouldrecommendtosomeoneelse
-let latitude = data.lat
-let longitude = data.lng
-let insecurity = data.pleaseshareyourexperiencerelatingtohousinginsecurity
-let harassment_story = data.pleaseshareyourexperiencerelatingtotenantharassment
-let reasons = data.whatareyourreasonsfornotrenting
-let event_address = data.whatisthezipcodeoftheaddresswhereyourexperiencestookplace
-let current_zip = data.whatisyourcurrentormostrecentzipcode
+
 
 //create circle marker
 let circleOptions = {
@@ -94,57 +107,89 @@ function addPop(data, group, popUpInfo){
     group.addLayer(L.circleMarker([data.lat,data.lng],circleOptions).addTo(map).bindPopup(popUpInfo))
 }
 
-//create Leaflet feature group layers
-let renter = L.featureGroup();
-let notRenter = L.featureGroup();
-let harrassment = L.featureGroup();
-let insecure = L.featureGroup();
-let hasResource = L.featureGroup();
 
 //function to sort data based on response and
 //create a marker with a pop up containing relevant info
+
 function addDataBasedonField(data){
-    //determine if user is currently a renter
-    if (data.areyoucurrentlyarenter == "Yes"){
-//function to sort data based on response and
-//create a marker with a pop up containing relevant info
-function addDataToMap(data){
-    //determine if user has left hometown
-    //if yes display hometown and what they miss
-    if (data.doyoulivesomewhereelsenow == "Yes"){
+
+    //turn data values into variables
+    let time = data.timestamp
+    let zip = data.whatisyourcurrentormostrecentzipcode
+    let renter = data.areyoucurrentlyarenter
+    let addr = data.didtheseexperiencestakeplaceatyourcurrentormostrecentaddress
+    let harassment = data.doyoufeelthatyouhavefacedanytypeoftenantharassment
+    let secure = data.doyoufeelthatyourhousingsituationissecure
+    let resources = data.isthereanythingyouwouldliketosharethathashelpedyouinyourhousingharassmentsituationthatyouwouldrecommendtosomeoneelse
+    let latitude = data.lat
+    let longitude = data.lng
+    let insecurity = data.pleaseshareyourexperiencerelatingtohousinginsecurity
+    let harassment_story = data.pleaseshareyourexperiencerelatingtotenantharassment
+    let reasons = data.whatareyourreasonsfornotrenting
+    let event_address = data.whatisthezipcodeoftheaddresswhereyourexperiencestookplace
+    let current_zip = data.whatisyourcurrentormostrecentzipcode
+
+    //determine if user is renter
+    if (renter == "Yes"){
         //set marker color
         circleOptions.fillColor = "cyan";
         //use leaflet API to add marker w/ info in popup
-        addPop(data, renter,
+        addPop(data, currentRenterLayer,
             '<h2>Timestamp</h2>' +
-            data.timestamp 
+            time +
+            '<h2>Do you feel that you have faced any type of tenant harassment?</h2>' +
+            harassment + ". " + harassment_story +
+            '<h2>Do you feel that your housing situation is secure?</h2>' +
+            secure + ". " + insecurity +
+            '<h2>Is there anything you would like to share that has helped you in your housing/harassment situation that you would recommend to someone else?</h2>' +
+            resources
         )
+
+        if (harassment == "Yes")
+        {
+            addPop(data, harrassmentLayer,
+                '<h2>Timestamp</h2>' +
+                time +
+                '<h2>Tenant harassment story</h2>' +
+                harassment_story
+            )
+        }
+
+        if (secure == "No")
+        {
+            addPop(data, insecureLayer,
+                '<h2>Timestamp</h2>' +
+                time +
+                '<h2>Housing insecurity story</h2>' +
+                insecure
+            )
+        }
+
+        if (resources.length != 0)
+        {
+            addPop(data, hasResourceLayer,
+                '<h2>Timestamp</h2>' +
+                time +
+                '<h2>Resource</h2>' +
+                resources
+            )
+        }
+
     } 
     //if user is not currently a renter, share their reasons for not renting
-    if (data.areyoucurrentlyarenter == "No") {
+    else { // renter == "No"
         //set marker color
         circleOptions.fillColor = "magenta";
         //use leaflet API to add marker w/ info in popup
-        addPop(data, notRenter,
+        addPop(data, notRenterLayer,
             '<h2>Timestamp</h2>' +
-            data.timestamp +
+            time +
             '<h2>What are your reasons for not renting?</h2>' +
-            data.whatareyourreasonsfornotrenting
+            reasons
         ) 
     }
-}
-
-// define layers
-let layers = {
-    "Currently renting": renter,
-    "Not currently renting": notRenter,
-    "Stories about tenant harassment": harrassment,
-    "Stories about housing insecurity": insecure,
-    "Has resource to share": hasResource
+    
 }
 
 //add layer control box
-L.control.layers(null,layers, {collapsed: false}).addTo(map)
-//make the map zoom to the extent of markers
-let allLayers = L.featureGroup([renter, notRenter, harrassment, insecure, hasResource]);
-map.fitBounds(allLayers.getBounds());
+L.control.layers(null,layers, {collapsed: false}).addTo(map);
