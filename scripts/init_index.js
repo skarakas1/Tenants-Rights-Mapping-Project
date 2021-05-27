@@ -15,8 +15,10 @@ const map = L.map('map', {
 //}).addTo(map);
 
 //get basemap
-let Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd',
+	maxZoom: 19
 });
 
 
@@ -26,7 +28,7 @@ let Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/re
 });*/
 
 //set basemap
-Esri_WorldStreetMap.addTo(map);
+CartoDB_Positron.addTo(map);
 
 //create Leaflet feature group layers
 let currentRenterLayer = L.featureGroup();
