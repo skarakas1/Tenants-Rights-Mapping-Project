@@ -3,7 +3,7 @@
 
 //create leaflet map and set params
 
-const map = L.map('map').setView([33.9, -118.2437], 10);
+const map = L.map('map', {scrollWheelZoom: false}).setView([33.9, -118.2437], 10);
 //openstreetmap attribution
 //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -65,8 +65,8 @@ function processData(theData){
     // lets see what the data looks like when its clean!
     console.log(formattedData)
     //send to old data function
-    formattedData.forEach(sortOldData)
-
+    //formattedData.forEach(sortOldData)
+    formattedData.forEach(addDataBasedonField);
     //make the map zoom to the extent of markers
     let allLayers = L.featureGroup([currentRenterLayer, notRenterLayer, harrassmentLayer, insecureLayer, hasResourceLayer]);
     // Initially check all of the layers!
@@ -77,17 +77,6 @@ function processData(theData){
     hasResourceLayer.addTo(map);
     
     map.fitBounds(allLayers.getBounds());
-}
-
-// function to sort out old data from 1st survey iteration
-function sortOldData(data){
-    if (data.timestamp != ''){
-        //send to function to sort based on response, add marker and popup
-        addDataBasedonField(data);
-        //make a button
-        createButtons(data.lat,data.lng,data.location)
-        return data.timestamp
-    }
 }
 
 
@@ -121,8 +110,6 @@ function addDataBasedonField(data){
     let harassment = data.doyoufeelthatyouhavefacedanytypeoftenantharassment
     let secure = data.doyoufeelthatyourhousingsituationissecure
     let resources = data.isthereanythingyouwouldliketosharethathashelpedyouinyourhousingharassmentsituationthatyouwouldrecommendtosomeoneelse
-    let latitude = data.lat
-    let longitude = data.lng
     let insecurity = data.pleaseshareyourexperiencerelatingtohousinginsecurity
     let harassment_story = data.pleaseshareyourexperiencerelatingtotenantharassment
     let reasons = data.whatareyourreasonsfornotrenting
