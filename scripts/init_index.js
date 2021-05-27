@@ -2,29 +2,25 @@
 
 
 //create leaflet map and set params
-const map = L.map('map').setView([34.0709, -118.444], 5);
+
+const map = L.map('map').setView([33.9, -118.2437], 10);
 //openstreetmap attribution
 //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 //}).addTo(map);
 
 //get basemap
-// let Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-// 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-    
-// });
-let Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-	maxZoom: 16
+
+let Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
 });
 
 //set basemap
-// Esri_WorldImagery.addTo(map);
-Esri_WorldGrayCanvas.addTo(map)
-
+Stadia_AlidadeSmooth.addTo(map);
 
 //get the datas as json
-const url = "https://spreadsheets.google.com/feeds/list/1aWClrKHcuVol5z2qQ5gGsHzY98aQkMvD39fVPeXPb0Q/onpdsx9/public/values?alt=json"
+const url = "https://spreadsheets.google.com/feeds/list/16F-aIZ0PutDur9tXTy92JD7rFrHd3YHZB1wCsh9Gs04/on8014x/public/values?alt=json"
 fetch(url)
 	.then(response => {
 		return response.json();
@@ -67,19 +63,21 @@ function processData(theData){
 //     }
 // }
 
-//create button function
-function createButtons(lat,lng,title){
-    const newButton = document.createElement("button"); // adds a new button
-    newButton.id = "button"+title; // gives the button a unique id
-    newButton.innerHTML = title; // gives the button a title
-    newButton.setAttribute("lat",lat); // sets the latitude 
-    newButton.setAttribute("lng",lng); // sets the longitude 
-    newButton.addEventListener('click', function(){
-        map.flyTo([lat,lng],15); //this is the flyTo from Leaflet
-    })
-    const spaceForButtons = document.getElementById("contents")
-    spaceForButtons.appendChild(newButton); //this adds the button to our page.
-}
+//turn data values into variables
+let time = data.timestamp
+let zip = data.whatisyourcurrentormostrecentzipcode
+let renter = data.areyoucurrentlyarenter
+let addr = data.didtheseexperiencestakeplaceatyourcurrentormostrecentaddress
+let harassment = data.doyoufeelthatyouhavefacedanytypeoftenantharassment
+let secure = data.doyoufeelthatyourhousingsituationissecure
+let resources = data.isthereanythingyouwouldliketosharethathashelpedyouinyourhousingharassmentsituationthatyouwouldrecommendtosomeoneelse
+let latitude = data.lat
+let longitude = data.lng
+let insecurity = data.pleaseshareyourexperiencerelatingtohousinginsecurity
+let harassment_story = data.pleaseshareyourexperiencerelatingtotenantharassment
+let reasons = data.whatareyourreasonsfornotrenting
+let event_address = data.whatisthezipcodeoftheaddresswhereyourexperiencestookplace
+let current_zip = data.whatisyourcurrentormostrecentzipcode
 
 //create circle marker
 let circleOptions = {
@@ -108,6 +106,12 @@ let hasResource = L.featureGroup();
 function addDataBasedonField(data){
     //determine if user is currently a renter
     if (data.areyoucurrentlyarenter == "Yes"){
+//function to sort data based on response and
+//create a marker with a pop up containing relevant info
+function addDataToMap(data){
+    //determine if user has left hometown
+    //if yes display hometown and what they miss
+    if (data.doyoulivesomewhereelsenow == "Yes"){
         //set marker color
         circleOptions.fillColor = "cyan";
         //use leaflet API to add marker w/ info in popup
