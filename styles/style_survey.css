@@ -7,6 +7,8 @@ body{
     "footer";
     grid-template-columns: 1fr;
     grid-template-rows: auto 85vh 5vh;
+    background-image: linear-gradient(to right, rgba(119, 136, 153, 0.062), rgba(211, 211, 211, 0.068));
+
 }
 
 header{

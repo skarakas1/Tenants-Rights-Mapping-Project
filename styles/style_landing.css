@@ -6,8 +6,28 @@ body{
     "footer";
     grid-template-columns: 1fr;
     grid-template-rows: 95vh 5vh;
+    color: #474440;
+    background-image: linear-gradient(to right, rgba(119, 136, 153, 0.61), lightgrey);
 }
 
+/*LINK STYLES*/
+a{
+  color:#474440;
+}
+
+a:link{
+  text-decoration: none;
+}
+a:visited{
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: none;
+  background-color:lightgrey;
+}
+a:active{
+  text-decoration: none;
+}
 
 /*BUTTON STYLES*/
 .btn-group button {
