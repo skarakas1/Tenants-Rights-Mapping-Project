@@ -1,3 +1,4 @@
+/*------------------------------BODY/GRID STYLES*/
 body{
     font-family: 'Montserrat', sans-serif;
     display:grid;
@@ -10,9 +11,8 @@ body{
     "footer";
     grid-gap:10px;
     background-image: linear-gradient(to left, rgba(119, 136, 153, 0.062), rgba(211, 211, 211, 0.068));
-
 }
-
+/*------------------------------HEADER STYLES*/
 header{
     margin-left: 10px;
     margin-right: 10px;
@@ -22,12 +22,9 @@ header{
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 2fr;
-    grid-template-areas: 
-    "title navigation"
-    ;
+    grid-template-areas:  "title navigation";
     border-bottom: 1px solid #474440;
 }
-
 #title{
     grid-area: title;
     text-align: right;
@@ -35,28 +32,24 @@ header{
     border-radius: .3em;
     color: #474440;
     background-color: #968e856c;
-    text-shadow: 1px 1px #FFCAB1;
-    
+    text-shadow: 1px 1px #FFCAB1;   
 }
-
+/*------------------------------NAV STYLES*/
 #navigation{
     grid-area: navigation;
     color: #474440;
 }
-
 ul{
     float:right;
     border-bottom: 1px solid #474440;
 }
-
 li{
    display: inline;
 }
-
+/*------------------------------LINK STYLES*/
 a{
     color:#474440;
 }
-
 a:link{
     text-decoration: none;
 }
@@ -70,35 +63,82 @@ a:hover{
 a:active{
     text-decoration: none;
 }
-
+/*------------------------------DESCRIPTION*/
 p{
     grid-area: header;
     color: #474440;
 }
-
-
+/*------------------------------MAP STYLES*/
 #map{
     border-radius: .5em;
     height:60vh;
     grid-area: map;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    grid-template-rows: repeat(3, minmax(0,1fr));
+    align-items: center;
+    justify-items: center;
 } 
-
-#survey iframe {
-   border: 0;
-   height: 100%;
-   left: 0;
-   position: absolute;
-   top: 0;
-   width: 100%;
+/*------------------------------SIDEBAR STYLES*/
+#sidebar{
+    grid-column: 1;
+    grid-row-start: 2;
+    grid-row-end: 4;
+    background-color: white;
+    color: #474440;
+    margin-left: 20px;
+    height: auto;
+    width: 100%;
+    z-index: 9999;
+    border: 2px solid #47444094;
+    border-radius: .3em;
+    display: grid;
+    grid-template-areas: 
+    "nav"
+    "text";
+    grid-template-columns: 1fr;
+    grid-template-rows: .2fr auto;
 }
-
+#sidebartext{
+    grid-area: "text";
+    margin: 4px;
+}
+/*---------------------SIDE BAR NAV*/
+    /* Add a black background color to the top navigation */
+#sidebarnav{
+    grid-area: "nav";
+    background-color: #474444;
+    overflow: hidden;
+  }
+  
+  /* Style the links inside the navigation bar */
+  #sidebarnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  
+  /* Change the color of links on hover */
+  #sidebarnav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+  /* Add a color to the active/current link */
+  #sidebarnav a.active {
+    background-color: #04AA6D;
+    color: white;
+  }
+/*------------------------------FOOTER STYLES*/
 footer{
-    
     grid-area: footer;
     color: #474440;
 }
-
- /* The Modal (background) */
+/*------------------------------MODAL STYLES*/
+/* The Modal (background) */
  .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
