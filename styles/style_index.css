@@ -98,6 +98,7 @@ p{
     "text";
     grid-template-columns: 1fr;
     grid-template-rows: .2fr auto;
+    background-color: #ffcab156;
 }
 #sidebartext{
     grid-area: "text";

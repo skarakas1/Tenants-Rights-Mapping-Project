@@ -1,51 +1,36 @@
 // TODO: Should set view to LA/Socal area!
 
-
+//---------------------------------------MAP SCRIPTS
 //create leaflet map and set params
-
-//const map = L.map('map', {scrollWheelZoom: false}).setView([33.9, -118.2437], 10);
 const map = L.map('map', {
     center: [33.9, -118.2437],
     zoom: 10,
     scrollWheelZoom: false
 });
-//openstreetmap attribution
-//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//}).addTo(map);
-
 //get basemap
 let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd',
 	maxZoom: 19
 });
-
-
-/*let Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-	maxZoom: 20,
-	attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-});*/
-
 //set basemap
 CartoDB_Positron.addTo(map);
 
+
+//-----------------------------------------------LAYERS
 //create Leaflet feature group layers
-let currentRenterLayer = L.featureGroup();
-let notRenterLayer = L.featureGroup();
+let totalResponseLayer = L.featureGroup();
 let harrassmentLayer = L.featureGroup();
 let insecureLayer = L.featureGroup();
-let hasResourceLayer = L.featureGroup();
 
 // define layers
 let layers = {
-    "Currently renting": currentRenterLayer,
-    "Not currently renting": notRenterLayer,
+    "All Responses": totalResponseLayer,
     "Stories about tenant harassment": harrassmentLayer,
     "Stories about housing insecurity": insecureLayer,
-    "Has resource to share": hasResourceLayer
 }
 
+//----------------------------------------DATA CLEANING/SHEETS API
 //get the datas as json
 const url = "https://spreadsheets.google.com/feeds/list/16F-aIZ0PutDur9tXTy92JD7rFrHd3YHZB1wCsh9Gs04/on8014x/public/values?alt=json"
 fetch(url)
@@ -73,147 +58,139 @@ function processData(theData){
       // add the clean data
       formattedData.push(formattedRow)
     }
-    // lets see what the data looks like when its clean!
-    console.log(formattedData)
-    //send to old data function
-    //formattedData.forEach(sortOldData)
-    formattedData.forEach(addDataBasedonField);
-    //make the map zoom to the extent of markers
-    let allLayers = L.featureGroup([currentRenterLayer, notRenterLayer, harrassmentLayer, insecureLayer, hasResourceLayer]);
-    // Initially check all of the layers!
-    currentRenterLayer.addTo(map);
-    notRenterLayer.addTo(map);
-    harrassmentLayer.addTo(map);
-    insecureLayer.addTo(map);
-    hasResourceLayer.addTo(map);
-    
-    //map.fitBounds(allLayers.getBounds());
+    formattedData.forEach(createObject)//create object and send to global array
+    console.log(objectArray)//log the objects
 }
 
+let id = 0;//create a unique id for each survey response object
+let objectArray = [];//create an array to store the objects
 
-
-//create circle marker
-let circleOptions = {
-    radius: 5,
-    fillColor: "#ff7800",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-}
-
-//pop up function and assign layer
-function addPop(data, group, popUpInfo){
-    group.addLayer(L.circleMarker([data.lat,data.lng],circleOptions).addTo(map).bindPopup(popUpInfo))
-}
-
-
-//function to sort data based on response and
-//create a marker with a pop up containing relevant info
-
-function addDataBasedonField(data){
-
-    //turn data values into variables
-    let time = data.timestamp
-    let zip = data.whatisyourcurrentormostrecentzipcode
-    let renter = data.areyoucurrentlyarenter
-    let addr = data.didtheseexperiencestakeplaceatyourcurrentormostrecentaddress
-    let harassment = data.doyoufeelthatyouhavefacedanytypeoftenantharassment
-    let secure = data.doyoufeelthatyourhousingsituationissecure
-    let resources = data.isthereanythingyouwouldliketosharethathashelpedyouinyourhousingharassmentsituationthatyouwouldrecommendtosomeoneelse
-    let insecurity = data.pleaseshareyourexperiencerelatingtohousinginsecurity
-    let harassment_story = data.pleaseshareyourexperiencerelatingtotenantharassment
-    let reasons = data.whatareyourreasonsfornotrenting
-    let event_address = data.whatisthezipcodeoftheaddresswhereyourexperiencestookplace
-    let current_zip = data.whatisyourcurrentormostrecentzipcode
-
-    //determine if user is renter
-    if (renter == "Yes"){
-        //set marker color
-        circleOptions.fillColor = "orange";
-        //use leaflet API to add marker w/ info in popup
-        addPop(data, currentRenterLayer,
-            '<h2>Timestamp</h2>' +
-            time +
-            '<h2>Do you feel that you have faced any type of tenant harassment?</h2>' +
-            harassment + ". " + harassment_story +
-            '<h2>Do you feel that your housing situation is secure?</h2>' +
-            secure + ". " + insecurity +
-            '<h2>Is there anything you would like to share that has helped you in your housing/harassment situation that you would recommend to someone else?</h2>' +
-            resources
-        )
-
-        if (harassment == "Yes")
-        {
-            addPop(data, harrassmentLayer,
-                '<h2>Timestamp</h2>' +
-                time +
-                '<h2>Tenant harassment story</h2>' +
-                harassment_story
-            )
-        }
-
-        if (secure == "No")
-        {
-            addPop(data, insecureLayer,
-                '<h2>Timestamp</h2>' +
-                time +
-                '<h2>Housing insecurity story</h2>' +
-                insecure
-            )
-        }
-
-        if (resources.length != 0)
-        {
-            addPop(data, hasResourceLayer,
-                '<h2>Timestamp</h2>' +
-                time +
-                '<h2>Resource</h2>' +
-                resources
-            )
-        }
-
-    } 
-    //if user is not currently a renter, share their reasons for not renting
-    else { // renter == "No"
-        //set marker color
-        circleOptions.fillColor = "magenta";
-        //use leaflet API to add marker w/ info in popup
-        addPop(data, notRenterLayer,
-            '<h2>Timestamp</h2>' +
-            time +
-            '<h2>What are your reasons for not renting?</h2>' +
-            reasons
-        ) 
+//create survey response object
+function createObject(data, id){
+    let thisData = {
+        "id": id + 1,
+        "lat": data.lat,
+        "lng": data.lng,
+        "time":data.timestamp,
+        "address1": data.whatisyourcurrentormostrecentzipcode,
+        "renter": data.areyoucurrentlyarenter,
+        "currentZipYN": data.didtheseexperiencestakeplaceatyourcurrentormostrecentaddress,
+        "harassmentYN": data.doyoufeelthatyouhavefacedanytypeoftenantharassment,
+        "secureYN": data.doyoufeelthatyourhousingsituationissecure,
+        "resources": data.isthereanythingyouwouldliketosharethathashelpedyouinyourhousingharassmentsituationthatyouwouldrecommendtosomeoneelse,
+        "insecurity": data.pleaseshareyourexperiencerelatingtohousinginsecurity,
+        "harassment": data.pleaseshareyourexperiencerelatingtotenantharassment,
+        "reasons": data.whatareyourreasonsfornotrenting,
+        "address2": data.whatisthezipcodeoftheaddresswhereyourexperiencestookplace,
+        "addressCurrent": data.inwhatzipcodedidyourexperiencestakeplace,
+        "email": data.pleaseenteryouremailaddress
     }
-    
+    objectArray.push(thisData);//add object to global array objectArray
+    //popMap(thisData);
 }
 
-//add layer control box
-L.control.layers(null,layers, {collapsed: false}).addTo(map);
 
-// Get the modal
-var modal = document.getElementById("myModal");
-
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-window.addEventListener('load', (event) => {
-  modal.style.display = "block";
-});
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
+//-----------------------------------------SIDEBAR
+function createSidebar(objectArray){
+    objectArray.forEach(popSidebar);
+}
+function popSidebar(object){
+    if(object.insecurity){
+        //add tab & text
+    }
+    if(object.harassment){ 
+        //add tab & text
+    }
+    if(object.reasons){
+        //add tab & text + upvote/downvote
+    }
 }
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-} 
+//ALBERT'S UPVOTE FUNCTION
+function getUpvotes(zipField,communityResourceID){
+    let url = 'https://docs.google.com/forms/d/e/1FAIpQLSevye7kmOaEeC879skTARFepAwyCus66WqQHEha0_FzY88Z-A/viewform?usp=pp_url'
+    let param1 = '&entry.1155798845='+zipField
+    let param2 = `&entry.725289503=kfHDJKhdsjkhfdjkf=`+communityResourceID
+    let iframeUrl = url + param1 + param2
+    // someone clicks on CR
+    // then show them the up vote form
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-----------------------------------------POULATE MAP
+//create circle marker
+// let circleOptions = {
+//     radius: 7,
+//     fillColor: "yellow",
+//     color: "#000",
+//     weight: 1,
+//     opacity: 1,
+//     fillOpacity: 0.8
+// }
+// //function for add markers & assign layer   
+// function addMarkers(data, group){
+//     group.addLayer(L.circleMarker([data.lat,data.lng],circleOptions).addTo(map))//REMOVED 'bind popup'
+// }
+// function popMap(object){//function to populate the map
+//     addMarkers(object, totalResponseLayer);//add marker/layer regardless for total responses
+//     if(object.harassmentYN){//add markers/layer for 'have experienced harassment'
+//         circleOptions.fillColor = "orange";//set marker color
+//         addMarkers(object, harrassmentLayer);
+//     }
+//     if(object.secureYN){//add markers/layer for 'feel housing insecure'
+//         circleOptions.fillColor = "red";
+//         addMarkers(object, insecureLayer);
+//     }
+// }
+
+//-----------------------------------------------------LAYER CONTROL BOX
+// //add layer control box
+//     //allLayers is never used?
+//     let allLayers = L.featureGroup([currentRenterLayer, notRenterLayer, harrassmentLayer, insecureLayer, hasResourceLayer]);
+//     // Initially check all of the layers!
+//     currentRenterLayer.addTo(map);
+//     notRenterLayer.addTo(map);
+//     harrassmentLayer.addTo(map);
+//     insecureLayer.addTo(map);
+//     hasResourceLayer.addTo(map);
+//     L.control.layers(null,layers, {collapsed: false}).addTo(map);
+
+// //-----------------------------------------------------MODAL SCRIPT
+// // Get the modal
+// var modal = document.getElementById("myModal");
+
+// // Get the button that opens the modal
+// var btn = document.getElementById("myBtn");
+
+// // Get the <span> element that closes the modal
+// var span = document.getElementsByClassName("close")[0];
+
+// // When the user clicks on the button, open the modal
+// window.addEventListener('load', (event) => {
+//   modal.style.display = "block";
+// });
+
+// // When the user clicks on <span> (x), close the modal
+// span.onclick = function() {
+//   modal.style.display = "none";
+// }
+
+// // When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+//   if (event.target == modal) {
+//     modal.style.display = "none";
+//   }
+// }
