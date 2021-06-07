@@ -1,11 +1,22 @@
-// TODO: Should set view to LA/Socal area!
-
-//---------------------------------------MAP SCRIPTS
+//-----------------------------------------
+//--------------------MAP SCRIPTS----------
+//-----------------------------------------
 //create leaflet map and set params
 const map = L.map('map', {
     center: [33.9, -118.2437],
     zoom: 10,
-    scrollWheelZoom: false
+    //LEAFLET SLEEP OPTIONS
+    // true by default, false if you want a wild map
+    sleep: true,
+    // time(ms) for the map to fall asleep upon mouseout
+    sleepTime: 750,
+    // time(ms) until map wakes on mouseover
+    wakeTime: 750,
+    // defines whether or not the user is prompted oh how to wake map
+    sleepNote: true,
+    // should hovering wake the map? (clicking always will)
+    hoverToWake: false
+    //scrollWheelZoom: false//added leaflet sleep instead
 });
 //get basemap
 let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -17,20 +28,26 @@ let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/
 CartoDB_Positron.addTo(map);
 
 
-//-----------------------------------------------LAYERS
+//-----------------------------------------
+//--------------------MAP LAYERS----------
+//-----------------------------------------
 //create Leaflet feature group layers
 let totalResponseLayer = L.featureGroup();
 let harrassmentLayer = L.featureGroup();
 let insecureLayer = L.featureGroup();
+let resourcesLayer = L.featureGroup();
 
 // define layers
 let layers = {
     "All Responses": totalResponseLayer,
     "Stories about tenant harassment": harrassmentLayer,
     "Stories about housing insecurity": insecureLayer,
+    "Community solutions": resourcesLayer
 }
 
-//----------------------------------------DATA CLEANING/SHEETS API
+//-----------------------------------------
+//--------------DATA CLEANING/SHEETS API---
+//-----------------------------------------
 //get the datas as json
 const url = "https://spreadsheets.google.com/feeds/list/16F-aIZ0PutDur9tXTy92JD7rFrHd3YHZB1wCsh9Gs04/on8014x/public/values?alt=json"
 fetch(url)
@@ -59,7 +76,7 @@ function processData(theData){
       formattedData.push(formattedRow)
     }
     formattedData.forEach(createObject)//create object and send to global array
-    console.log(objectArray)//log the objects
+    //console.log(objectArray)//log the objects
 }
 
 let id = 0;//create a unique id for each survey response object
@@ -72,7 +89,7 @@ function createObject(data, id){
         "lat": data.lat,
         "lng": data.lng,
         "time":data.timestamp,
-        "address1": data.whatisyourcurrentormostrecentzipcode,
+        "address1": data.whatisyourcurrentormostrecentaddress,
         "renter": data.areyoucurrentlyarenter,
         "currentZipYN": data.didtheseexperiencestakeplaceatyourcurrentormostrecentaddress,
         "harassmentYN": data.doyoufeelthatyouhavefacedanytypeoftenantharassment,
@@ -82,18 +99,145 @@ function createObject(data, id){
         "harassment": data.pleaseshareyourexperiencerelatingtotenantharassment,
         "reasons": data.whatareyourreasonsfornotrenting,
         "address2": data.whatisthezipcodeoftheaddresswhereyourexperiencestookplace,
-        "addressCurrent": data.inwhatzipcodedidyourexperiencestakeplace,
+        "addressCurrent": data.atwhataddressdidyourexperiencestakeplace,
         "email": data.pleaseenteryouremailaddress
     }
+
+    // step 1: turn allPoints into a turf.js featureCollection
+    thePoints = turf.featureCollection(allPoints)
+    console.log(thePoints)
+
+    // step 2: run the spatial analysis
+    getBoundary(boundaryLayer)
+
+    //turf requires lng,lat format other than lat,lng
+    let thisPoint = turf.point([Number(data.lng),Number(data.lat)],{thisData})// create the turfJS point
+    allPoints.push(thisPoint)// put all the turfJS points into `allPoints`
+
+    
     objectArray.push(thisData);//add object to global array objectArray
-    //popMap(thisData);
+    popMap(thisData);
 }
 
+//-----------------------------------------
+//--------------------POPULATE MAP----------
+//-----------------------------------------
+//create circle marker
+let circleOptions = {
+    radius: 300,
+    fillColor: "yellow",
+    color: "#FFCAB1",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: .3
+}
+//function for add markers & assign layer   
+function addMarkers(data, group){
+    group.addLayer(L.circle([data.lat,data.lng],circleOptions).addTo(map))//REMOVED 'bind popup'
+}
+function popMap(object){//function to populate the map
+    addMarkers(object, totalResponseLayer);//add marker/layer regardless for total responses
+    if(object.harassmentYN){//add markers/layer for 'have experienced harassment'
+        circleOptions.fillColor = "orange";//set marker color
+        addMarkers(object, harrassmentLayer);
+    }
+    if(object.secureYN){//add markers/layer for 'feel housing insecure'
+        circleOptions.fillColor = "red";
+        addMarkers(object, insecureLayer);
+    }
+}
 
-//-----------------------------------------SIDEBAR
-function createSidebar(objectArray){
+//-----------------------------------------
+//--------------------ZIPCode Boundary Layer
+//-----------------------------------------
+//declarations for turf stuff
+let allLayers;
+// this is the boundary layer located as a geojson in the /data/ folder 
+const boundaryLayer = "../data/la_zipcodes.geojson"
+let boundary; // place holder for the data
+let collected; // variable for turf.js collected points 
+let allPoints = []; // array for all the data points
+
+//function for clicking on polygons
+function onEachFeature(feature, layer) {
+    console.log(feature.properties)
+    if (feature.properties.values) {
+        //count the values within the polygon by using .length on the values array created from turf.js collect
+        let count = feature.properties
+        console.log(count) // see what the count is on click
+        let text = count.toString() // convert it to a string
+
+
+//..........................................
+//What do we want to do here instead of this pop up?
+//..........................................>>>
+        //THIS WILL HAVE TO CHANGE IF WE'RE NOT USING POPUPS
+        layer.bindPopup(text); //bind the pop up to the number
+    }
+}
+
+function getBoundary(layer){
+    fetch(layer)
+    .then(response => {
+        return response.json();
+        })
+    .then(data =>{
+                //set the boundary to data
+                boundary = data
+
+                // run the turf collect geoprocessing
+                collected = turf.collect(boundary, thePoints, 'thisData', 'values');//PASS IN OBJECT AT 'speakEnglish'
+                // just for fun, you can make buffers instead of the collect too:
+                // collected = turf.buffer(thePoints, 50,{units:'miles'});
+                console.log(collected.features)
+
+                // here is the geoJson of the `collected` result:
+                L.geoJson(collected,{onEachFeature: onEachFeature,style:function(feature){
+                    console.log(feature)
+                    if (feature.properties.values.length > 0) {
+                        return {
+                            color: "#ff0000",stroke: false
+                        };
+                    }
+                    else{
+                        // make the polygon gray and blend in with basemap if it doesn't have any values
+                        return{
+                            opacity:0,color:"#efefef"
+                        }
+                    }
+                }
+                // add the geojson to the map
+                    }).addTo(map)
+        }
+    )   
+}
+
+//console.log(boundary)
+//-----------------------------------------
+//--------------------SIDEBAR--------------
+//-----------------------------------------
+
+//get DOM elements
+const sideBarNav = document.getElementById("sidebarnav");
+const sideBarText = document.getElementById("sidebartext");
+
+//THIS IS ALL PSEUDOCODE NOW
+//function to determine which id story to dis
+// function getStoryID(zipcode?, object array?){
+//     for(item in objectArray){
+//         if(item.zipcode){
+            
+        
+//     }
+// }
+
+
+//send each object thru sidebar function?
+function createSidebar(objectArray, index){
     objectArray.forEach(popSidebar);
 }
+
+//
 function popSidebar(object){
     if(object.insecurity){
         //add tab & text
@@ -106,7 +250,7 @@ function popSidebar(object){
     }
 }
 
-//ALBERT'S UPVOTE FUNCTION
+//--------------------------ALBERT'S UPVOTE FUNCTION
 function getUpvotes(zipField,communityResourceID){
     let url = 'https://docs.google.com/forms/d/e/1FAIpQLSevye7kmOaEeC879skTARFepAwyCus66WqQHEha0_FzY88Z-A/viewform?usp=pp_url'
     let param1 = '&entry.1155798845='+zipField
@@ -114,61 +258,34 @@ function getUpvotes(zipField,communityResourceID){
     let iframeUrl = url + param1 + param2
     // someone clicks on CR
     // then show them the up vote form
-
 }
 
+//-----------------------------------------
+//--------------------LAYER CONTROL----------
+//-----------------------------------------
+//add layer control box
+allLayers = L.featureGroup([totalResponseLayer, harrassmentLayer, insecureLayer, resourcesLayer]);
+function layerControl(layerGroup){
+    totalResponseLayer.addTo(map);
+    insecureLayer.addTo(map);
+    harrassmentLayer.addTo(map);
+    resourcesLayer.addTo(map);
+    L.control.layers(null,layers, {collapsed: false}).addTo(map);
+}
+layerControl(allLayers);
 
 
 
+const search = new GeoSearch.GeoSearchControl({
+    provider: new GeoSearch.OpenStreetMapProvider(),
+  });
 
+map.addControl(search);
+//console.log(GeoSearch.OpenStreetMapProvider)
 
-
-
-
-
-
-
-
-
-//-----------------------------------------POULATE MAP
-//create circle marker
-// let circleOptions = {
-//     radius: 7,
-//     fillColor: "yellow",
-//     color: "#000",
-//     weight: 1,
-//     opacity: 1,
-//     fillOpacity: 0.8
-// }
-// //function for add markers & assign layer   
-// function addMarkers(data, group){
-//     group.addLayer(L.circleMarker([data.lat,data.lng],circleOptions).addTo(map))//REMOVED 'bind popup'
-// }
-// function popMap(object){//function to populate the map
-//     addMarkers(object, totalResponseLayer);//add marker/layer regardless for total responses
-//     if(object.harassmentYN){//add markers/layer for 'have experienced harassment'
-//         circleOptions.fillColor = "orange";//set marker color
-//         addMarkers(object, harrassmentLayer);
-//     }
-//     if(object.secureYN){//add markers/layer for 'feel housing insecure'
-//         circleOptions.fillColor = "red";
-//         addMarkers(object, insecureLayer);
-//     }
-// }
-
-//-----------------------------------------------------LAYER CONTROL BOX
-// //add layer control box
-//     //allLayers is never used?
-//     let allLayers = L.featureGroup([currentRenterLayer, notRenterLayer, harrassmentLayer, insecureLayer, hasResourceLayer]);
-//     // Initially check all of the layers!
-//     currentRenterLayer.addTo(map);
-//     notRenterLayer.addTo(map);
-//     harrassmentLayer.addTo(map);
-//     insecureLayer.addTo(map);
-//     hasResourceLayer.addTo(map);
-//     L.control.layers(null,layers, {collapsed: false}).addTo(map);
-
-// //-----------------------------------------------------MODAL SCRIPT
+//-----------------------------------------
+//--------------------MODAL----------
+//-----------------------------------------
 // // Get the modal
 // var modal = document.getElementById("myModal");
 
