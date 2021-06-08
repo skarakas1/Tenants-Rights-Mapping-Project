@@ -9,12 +9,10 @@ body{
     color: #474440;
     background-image: linear-gradient(to right, rgba(119, 136, 153, 0.61), lightgrey);
 }
-
 /*LINK STYLES*/
 a{
   color:#474440;
 }
-
 a:link{
   text-decoration: none;
 }
@@ -28,7 +26,6 @@ a:hover{
 a:active{
   text-decoration: none;
 }
-
 /*BUTTON STYLES*/
 .btn-group button {
     background-color: #968e856c; /* Green background */
@@ -43,16 +40,10 @@ a:active{
   .btn-group button:not(:last-child) {
     border-bottom: none; /* Prevent double borders */
   }
-  
   /* Add a background color on hover */
   .btn-group button:hover {
     background-color: #474440;
   }
-
-
-
-
-
 /*CENTER-ING STYLES -- FLEXBOX*/
   .box {
     display: flex;

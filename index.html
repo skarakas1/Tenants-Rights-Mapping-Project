@@ -12,9 +12,19 @@
         <!-- Leaflet's JavaScript-->
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
+        <!-- geocoder! -->
+        <link  rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"/>
+        <script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
+
         <!--font family-->
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+        <!-- Adding the TurfJs library  -->
+        <script src='https://unpkg.com/@turf/turf@6.3.0/turf.min.js'></script>
+
+        <!--Sleep JS Library-->
+        <script src="scripts/sleep.js"></script> <!-- Sleep JavaScript-->
     </head>
     
     <body>
@@ -34,17 +44,45 @@
             <h1 id="title">Tenants' Rights Mapping Project</h1>
             <nav id="navigation">
                 <ul>
-                    <li><a href="survey.html">Survey</a> /</li>
-                    <li><a href="landing_page.html">Language</a> /</li>
-                    <li><a href="https://github.com/skarakas1/Tenants-Rights-Mapping-Project">Github Documentation</a></li>
+                    <li> <div class="dropdown">
+                        <button class="dropbtn">Survey</button>
+                        <div class="dropdown-content">
+                          <a href="survey.html">English</a>
+                          <a href="http://translate.google.com/translate?sl=en&tl=zh-CN&u=https://docs.google.com/forms/d/e/1FAIpQLSfKtoc5vgzuvM-dDYoSbvxNatD3yiMOd-MXH_ue4AuE1Qh4Fg/viewform">中文</a>
+                          <a href="">TRADITIONAL CHINESE LINK HERE</a>
+                          <a href="http://translate.google.com/translate?sl=en&tl=ko&u=https://docs.google.com/forms/d/e/1FAIpQLSfKtoc5vgzuvM-dDYoSbvxNatD3yiMOd-MXH_ue4AuE1Qh4Fg/viewform">한국어</a>
+                          <a href="http://translate.google.com/translate?sl=en&tl=th&u=https://docs.google.com/forms/d/e/1FAIpQLSfKtoc5vgzuvM-dDYoSbvxNatD3yiMOd-MXH_ue4AuE1Qh4Fg/viewform">ไทย</a>
+                          <a href="http://translate.google.com/translate?sl=en&tl=bn&u=https://docs.google.com/forms/d/e/1FAIpQLSfKtoc5vgzuvM-dDYoSbvxNatD3yiMOd-MXH_ue4AuE1Qh4Fg/viewform">বাংলা</a>
+                          <a href="http://translate.google.com/translate?sl=en&tl=tl&u=https://docs.google.com/forms/d/e/1FAIpQLSfKtoc5vgzuvM-dDYoSbvxNatD3yiMOd-MXH_ue4AuE1Qh4Fg/viewform">Filipino</a>
+                          <a href="http://translate.google.com/translate?sl=en&tl=hy&u=https://docs.google.com/forms/d/e/1FAIpQLSfKtoc5vgzuvM-dDYoSbvxNatD3yiMOd-MXH_ue4AuE1Qh4Fg/viewform">հայերեն</a>
+                        </div>
+                      </div>  /</li>
+                    <li class="nonDrop"><a href="landing_page.html">Language</a> /</li>
+                    <li class="nonDrop"><a href="https://github.com/skarakas1/Tenants-Rights-Mapping-Project">Github Documentation</a></li>
             </ul>
             </nav>
+            <!--GOOGLE TRANSLATE BUTTON-->
+            <div id="google_translate_element"></div>
+
+            <script type="text/javascript">
+            function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en',layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');
+            }
+            </script>
+             <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         </header>
 
         <p>
             This is where you will see a brief description of our project, as well as a link to <a href="survey.html">take the survey! </a>
         </p>
-        <div id="map"></div>
+        <div id="sidebar">
+            <div id="sidebarcontent">
+                <nav id="sidebarnav"></nav>
+                <p id="sidebartext"></p>
+            </div>
+        </div>
+        <div id="map">
+        </div>
         <footer>Copyright Tenants' Rights Mapping Project 2021
         </footer>
         <script src="scripts/init_index.js"></script>
