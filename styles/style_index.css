@@ -2,15 +2,16 @@
 body{
     font-family: 'Montserrat', sans-serif;
     display:grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, auto);
     grid-template-areas:
-    "nav"
-    "header"
-    "map"
-    "footer";
+    "nav nav nav"
+    "header header header"
+    "map map sidebar"
+    "footer footer footer";
     grid-gap:10px;
-    background-image: linear-gradient(to left, rgba(119, 136, 153, 0.062), rgba(211, 211, 211, 0.068));
+    background-image: linear-gradient(to left, rgba(119, 136, 153, 0.199), rgba(211, 211, 211, 0.068));
+    margin-right: 20px;
 }
 /*------------------------------HEADER STYLES*/
 header{
@@ -70,45 +71,46 @@ p{
 }
 /*------------------------------MAP STYLES*/
 #map{
+    margin-left: 10px;
+    border: 2px solid #474440;
     border-radius: .5em;
     height:60vh;
     grid-area: map;
-    display: grid;
+    /* display: grid;
     grid-template-columns: repeat(3, minmax(0,1fr));
     grid-template-rows: repeat(3, minmax(0,1fr));
     align-items: center;
-    justify-items: center;
+    justify-items: center; */
 } 
 /*------------------------------SIDEBAR STYLES*/
 #sidebar{
-    grid-column: 1;
+    grid-area: sidebar;
+    /* grid-column: 1;
     grid-row-start: 2;
-    grid-row-end: 4;
-    background-color: white;
+    grid-row-end: 4; */
+    background-color: #968e856c;
     color: #474440;
-    margin-left: 20px;
     height: auto;
-    width: 100%;
-    z-index: 9999;
+    /* height: auto;
+    width: 100%; */
+    /* z-index: 9999; */
     border: 2px solid #47444094;
     border-radius: .3em;
-    display: grid;
+    /* display: grid;
     grid-template-areas: 
     "nav"
-    "text";
-    grid-template-columns: 1fr;
-    grid-template-rows: .2fr auto;
-    background-color: #ffcab156;
+    "text"; */
+    /* grid-template-columns: 1fr;
+    grid-template-rows: .2fr auto; */
 }
 #sidebartext{
-    grid-area: "text";
-    margin: 4px;
+  margin: 4px;
 }
 /*---------------------SIDE BAR NAV*/
     /* Add a black background color to the top navigation */
 #sidebarnav{
-    grid-area: "nav";
-    background-color: #474444;
+    /* grid-area: "nav"; */
+    background-color: #662c2c;
     overflow: hidden;
   }
   
@@ -218,3 +220,23 @@ footer{
   
   /* Change the background color of the dropdown button when the dropdown content is shown */
   .dropdown:hover .dropbtn {background-color:#ffcab175;} 
+
+  @media all and (max-width:700px){
+    body{
+      grid-template-areas:
+      "nav"
+      "header"
+      "map"
+      "sidebar"
+      "footer";
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(5, auto);
+    }
+    header{
+      grid-template-areas: 
+      "title"
+      "navigation";
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+  }

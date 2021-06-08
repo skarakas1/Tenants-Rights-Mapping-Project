@@ -125,7 +125,7 @@ function createObject(data, id){
 //create circle marker
 let circleOptions = {
     radius: 300,
-    fillColor: "yellow",
+    fillColor: "red",
     color: "#FFCAB1",
     weight: 1,
     opacity: 1,
@@ -138,11 +138,13 @@ function addMarkers(data, group){
 function popMap(object){//function to populate the map
     addMarkers(object, totalResponseLayer);//add marker/layer regardless for total responses
     if(object.harassmentYN){//add markers/layer for 'have experienced harassment'
-        circleOptions.fillColor = "orange";//set marker color
+        circleOptions.fillColor = "red";//set marker color
+        circleOptions.fillOpacity = ".3"
         addMarkers(object, harrassmentLayer);
     }
     if(object.secureYN){//add markers/layer for 'feel housing insecure'
         circleOptions.fillColor = "red";
+        circleOptions.fillOpacity = ".3"
         addMarkers(object, insecureLayer);
     }
 }
@@ -196,7 +198,7 @@ function getBoundary(layer){
                     console.log(feature)
                     if (feature.properties.values.length > 0) {
                         return {
-                            color: "#ff0000",stroke: false
+                            color: "orange",stroke: false
                         };
                     }
                     else{
@@ -211,8 +213,8 @@ function getBoundary(layer){
         }
     )   
 }
-
 //console.log(boundary)
+
 //-----------------------------------------
 //--------------------SIDEBAR--------------
 //-----------------------------------------
@@ -221,44 +223,39 @@ function getBoundary(layer){
 const sideBarNav = document.getElementById("sidebarnav");
 const sideBarText = document.getElementById("sidebartext");
 
-//THIS IS ALL PSEUDOCODE NOW
-//function to determine which id story to dis
+//THIS IS ALL PSEUDOCODE...
+//function to determine which id story to display
 // function getStoryID(zipcode?, object array?){
 //     for(item in objectArray){
-//         if(item.zipcode){
-            
-        
+//         if(item.zipcode){    
+//     }
+// }
+// //send each object thru sidebar function?
+// function createSidebar(objectArray, index){
+//     objectArray.forEach(popSidebar);
+// }
+// //
+// function popSidebar(object){
+//     if(object.insecurity){
+//         //add tab & text
+//     }
+//     if(object.harassment){ 
+//         //add tab & text
+//     }
+//     if(object.reasons){
+//         //add tab & text + upvote/downvote
 //     }
 // }
 
-
-//send each object thru sidebar function?
-function createSidebar(objectArray, index){
-    objectArray.forEach(popSidebar);
-}
-
-//
-function popSidebar(object){
-    if(object.insecurity){
-        //add tab & text
-    }
-    if(object.harassment){ 
-        //add tab & text
-    }
-    if(object.reasons){
-        //add tab & text + upvote/downvote
-    }
-}
-
-//--------------------------ALBERT'S UPVOTE FUNCTION
-function getUpvotes(zipField,communityResourceID){
-    let url = 'https://docs.google.com/forms/d/e/1FAIpQLSevye7kmOaEeC879skTARFepAwyCus66WqQHEha0_FzY88Z-A/viewform?usp=pp_url'
-    let param1 = '&entry.1155798845='+zipField
-    let param2 = `&entry.725289503=kfHDJKhdsjkhfdjkf=`+communityResourceID
-    let iframeUrl = url + param1 + param2
-    // someone clicks on CR
-    // then show them the up vote form
-}
+// //--------------------------ALBERT'S UPVOTE FUNCTION
+// function getUpvotes(zipField,communityResourceID){
+//     let url = 'https://docs.google.com/forms/d/e/1FAIpQLSevye7kmOaEeC879skTARFepAwyCus66WqQHEha0_FzY88Z-A/viewform?usp=pp_url'
+//     let param1 = '&entry.1155798845='+zipField
+//     let param2 = `&entry.725289503=kfHDJKhdsjkhfdjkf=`+communityResourceID
+//     let iframeUrl = url + param1 + param2
+//     // someone clicks on CR
+//     // then show them the up vote form
+// }
 
 //-----------------------------------------
 //--------------------LAYER CONTROL----------
@@ -274,7 +271,16 @@ function layerControl(layerGroup){
 }
 layerControl(allLayers);
 
-
+//-----------------------------------------
+//--------------------Geocode Search--------
+//-----------------------------------------
+//this search bar will allow the user to put in their address and fly them to their zipcode
+//if there are resources they will pop up in the sidebar
+//if more than one, sorted by up/down vote
+//this will work by an eventhandler assoc. w/ the search fly to function
+// same function to display sidebar will also execute on each zipcode onclick
+// IF there is no survey filled out for that zipcode, display a message that says something like:
+// ~~"there is no survey data for this zip yet, please fill out the survey"~~
 
 const search = new GeoSearch.GeoSearchControl({
     provider: new GeoSearch.OpenStreetMapProvider(),
