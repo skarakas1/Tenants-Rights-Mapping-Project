@@ -1,3 +1,23 @@
+let id = 0;//create a unique id for each survey response object
+let objectArray = [];//create an array to store the objects
+
+//-----------------------------------------
+//--------------------MAP LAYERS----------
+//-----------------------------------------
+//create Leaflet feature group layers
+let totalResponseLayer = L.featureGroup();
+let harrassmentLayer = L.featureGroup();
+let insecureLayer = L.featureGroup();
+let resourcesLayer = L.featureGroup();
+
+// define layers
+let layers = {
+    "All Responses": totalResponseLayer,
+    "Stories about tenant harassment": harrassmentLayer,
+    "Stories about housing insecurity": insecureLayer,
+    "Community solutions": resourcesLayer
+}
+
 //-----------------------------------------
 //--------------------MAP SCRIPTS----------
 //-----------------------------------------
@@ -26,24 +46,6 @@ let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/
 });
 //set basemap
 CartoDB_Positron.addTo(map);
-
-
-//-----------------------------------------
-//--------------------MAP LAYERS----------
-//-----------------------------------------
-//create Leaflet feature group layers
-let totalResponseLayer = L.featureGroup();
-let harrassmentLayer = L.featureGroup();
-let insecureLayer = L.featureGroup();
-let resourcesLayer = L.featureGroup();
-
-// define layers
-let layers = {
-    "All Responses": totalResponseLayer,
-    "Stories about tenant harassment": harrassmentLayer,
-    "Stories about housing insecurity": insecureLayer,
-    "Community solutions": resourcesLayer
-}
 
 //-----------------------------------------
 //--------------DATA CLEANING/SHEETS API---
@@ -79,9 +81,6 @@ function processData(theData){
     //console.log(objectArray)//log the objects
 }
 
-let id = 0;//create a unique id for each survey response object
-let objectArray = [];//create an array to store the objects
-
 //create survey response object
 function createObject(data, id){
     let thisData = {
@@ -101,7 +100,7 @@ function createObject(data, id){
         "address2": data.whatisthezipcodeoftheaddresswhereyourexperiencestookplace,
         "addressCurrent": data.atwhataddressdidyourexperiencestakeplace,
         "email": data.pleaseenteryouremailaddress
-    }
+    }//THIS IS THE SURVEY DATA OBJECT
 
     // step 1: turn allPoints into a turf.js featureCollection
     thePoints = turf.featureCollection(allPoints)
@@ -114,7 +113,6 @@ function createObject(data, id){
     let thisPoint = turf.point([Number(data.lng),Number(data.lat)],{thisData})// create the turfJS point
     allPoints.push(thisPoint)// put all the turfJS points into `allPoints`
 
-    
     objectArray.push(thisData);//add object to global array objectArray
     popMap(thisData);
 }
@@ -160,24 +158,55 @@ let boundary; // place holder for the data
 let collected; // variable for turf.js collected points 
 let allPoints = []; // array for all the data points
 
+//HTML DOM declarations
+let sideBarNav = document.getElementById("sidebarnav");
+let sideBarText = document.getElementById("sidebartext");
+
+
+function getSurveyInfo(survey){
+    // console.log('survey')
+    // console.log(survey)
+    // let result = survey.resources
+    let result;
+    let thisZipcode = document.createElement('button')
+    if (survey.resources){
+        result = survey.resources
+    }
+    else{
+        result = "no resources"
+    }
+    thisZipcode.innerHTML = result
+    console.log('thisZipcode')
+    console.log(thisZipcode)
+    // console.log(thisZipcode.innerHTML)
+    sideBarText.appendChild(thisZipcode)
+    return result
+}
 //function for clicking on polygons
 function onEachFeature(feature, layer) {
-    console.log(feature.properties)
-    if (feature.properties.values) {
+    // console.log(feature.properties)
+    let text;
+    // do this only if there is survey data in a zipcode
+    if (feature.properties.values.length > 0) {//within this if statement onEachFeature loops thru everything 
+        let zipcode = feature.properties.zcta
+        let surveyData = feature.properties.values //array of all the survey data in a zipcode
+        //TO GET INDV DATA IT MUST HAPPEN IN THIS FOLLOWING LOOP>>>
+        surveyData.forEach(survey => getSurveyInfo(survey))
         //count the values within the polygon by using .length on the values array created from turf.js collect
-        let count = feature.properties
-        console.log(count) // see what the count is on click
-        let text = count.toString() // convert it to a string
-
-
-//..........................................
-//What do we want to do here instead of this pop up?
-//..........................................>>>
-        //THIS WILL HAVE TO CHANGE IF WE'RE NOT USING POPUPS
-        layer.bindPopup(text); //bind the pop up to the number
+        let count = feature.properties.values.length
+        // console.log(count) // see what the count is on click
+        //this is thesurvey data/zip
     }
+    else{
+        text = "We don't have any data for this zipcode yet--please fill out the <a href='survey.html'> survey!</a>"
+        // text = count.toString() // convert it to a string
+        //THIS WILL HAVE TO CHANGE IF WE'RE NOT USING POPUPS
+         //bind the pop up to the number
+        layer.bindPopup(text);
+        }
 }
 
+//turf.js geoprocessing and polygons
 function getBoundary(layer){
     fetch(layer)
     .then(response => {
@@ -186,19 +215,16 @@ function getBoundary(layer){
     .then(data =>{
                 //set the boundary to data
                 boundary = data
-
                 // run the turf collect geoprocessing
-                collected = turf.collect(boundary, thePoints, 'thisData', 'values');//PASS IN OBJECT AT 'speakEnglish'
-                // just for fun, you can make buffers instead of the collect too:
-                // collected = turf.buffer(thePoints, 50,{units:'miles'});
-                console.log(collected.features)
-
-                // here is the geoJson of the `collected` result:
+                collected = turf.collect(boundary, thePoints, 'thisData', 'values');
+                // console.log('collected')
+                // console.log(collected)
+                // here is the geoJson of the `collected` result:                
                 L.geoJson(collected,{onEachFeature: onEachFeature,style:function(feature){
-                    console.log(feature)
+                    // console.log(feature)
                     if (feature.properties.values.length > 0) {
                         return {
-                            color: "orange",stroke: false
+                            color: "orange",stroke: true
                         };
                     }
                     else{
@@ -214,14 +240,9 @@ function getBoundary(layer){
     )   
 }
 //console.log(boundary)
-
 //-----------------------------------------
 //--------------------SIDEBAR--------------
 //-----------------------------------------
-
-//get DOM elements
-const sideBarNav = document.getElementById("sidebarnav");
-const sideBarText = document.getElementById("sidebartext");
 
 //THIS IS ALL PSEUDOCODE...
 //function to determine which id story to display
