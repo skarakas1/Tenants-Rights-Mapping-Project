@@ -25,6 +25,7 @@ header{
     grid-template-columns: 1fr 2fr;
     grid-template-areas:  "title navigation";
     border-bottom: 1px solid #474440;
+    
 }
 #title{
     grid-area: title;
@@ -33,7 +34,12 @@ header{
     border-radius: .3em;
     color: #474440;
     background-color: #968e856c;
-    text-shadow: 1px 1px #FFCAB1;   
+    text-shadow: 1px 1px #FFCAB1;
+    box-shadow:
+      0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+      0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+      0 12.5px 10px rgba(0, 0, 0, 0.06),
+      0 22.3px 17.9px rgba(0, 0, 0, 0.072);
 }
 /*------------------------------NAV STYLES*/
 #navigation{
@@ -81,6 +87,11 @@ p{
     grid-template-rows: repeat(3, minmax(0,1fr));
     align-items: center;
     justify-items: center; */
+    box-shadow:
+      0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+      0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+      0 12.5px 10px rgba(0, 0, 0, 0.06),
+      0 22.3px 17.9px rgba(0, 0, 0, 0.072);
 } 
 /*------------------------------SIDEBAR STYLES*/
 #sidebar{
@@ -102,6 +113,11 @@ p{
     "text"; */
     /* grid-template-columns: 1fr;
     grid-template-rows: .2fr auto; */
+    box-shadow:
+      0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+      0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+      0 12.5px 10px rgba(0, 0, 0, 0.06),
+      0 22.3px 17.9px rgba(0, 0, 0, 0.072);
 }
 #sidebartext{
   margin: 4px;
@@ -192,6 +208,7 @@ footer{
   .dropdown {
     position: relative;
     display: inline-block;
+    
   }
   
   /* Dropdown Content (Hidden by Default) */
@@ -213,7 +230,12 @@ footer{
   }
   
   /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {background-color: #968e856c;}
+  .dropdown-content a:hover {background-color: #968e856c;
+    box-shadow:
+    0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+    0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072);}
   
   /* Show the dropdown menu on hover */
   .dropdown:hover .dropdown-content {display: block;}
