@@ -1,3 +1,4 @@
+//variable declarations
 let id = 0;//create a unique id for each survey response object
 let objectArray = [];//create an array to store the objects
 
@@ -60,7 +61,6 @@ fetch(url)
     .then(data =>{
         processData(data)}
         )
-
 //clean data and make objects
 function processData(theData){
     const formattedData = [] /* this array will eventually be populated with the contents of the spreadsheet's rows */
@@ -104,7 +104,7 @@ function createObject(data, id){
 
     // step 1: turn allPoints into a turf.js featureCollection
     thePoints = turf.featureCollection(allPoints)
-    console.log(thePoints)
+    // console.log(thePoints)
 
     // step 2: run the spatial analysis
     getBoundary(boundaryLayer)
@@ -118,7 +118,7 @@ function createObject(data, id){
 }
 
 //-----------------------------------------
-//--------------------POPULATE MAP----------
+//--------------------POPULATE MAP---------
 //-----------------------------------------
 //create circle marker
 let circleOptions = {
@@ -164,16 +164,16 @@ let sideBarText = document.getElementById("sidebartext");
 
 
 function getSurveyInfo(survey){
-    // console.log('survey')
-    // console.log(survey)
+    console.log('survey')
+    console.log(survey)
     // let result = survey.resources
     let result;
-    let thisZipcode = document.createElement('button')
+    let thisZipcode = document.createElement('div')
     if (survey.resources){
         result = survey.resources
     }
     else{
-        result = "no resources"
+        // result = "no resources"
     }
     thisZipcode.innerHTML = result
     console.log('thisZipcode')
