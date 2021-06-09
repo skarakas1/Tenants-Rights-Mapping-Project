@@ -223,6 +223,7 @@ function getBoundary(layer){
                 L.geoJson(collected,{onEachFeature: onEachFeature,style:function(feature){
                     // console.log(feature)
                     if (feature.properties.values.length > 0) {
+                        //feature.addEventListener(onclick,popSidebar(thisData))
                         return {
                             color: "orange",stroke: true
                         };
