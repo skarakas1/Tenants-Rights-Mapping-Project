@@ -7,14 +7,14 @@ let objectArray = [];//create an array to store the objects
 //-----------------------------------------
 //create Leaflet feature group layers
 let totalResponseLayer = L.featureGroup();
-let harrassmentLayer = L.featureGroup();
+let harassmentLayer = L.featureGroup();
 let insecureLayer = L.featureGroup();
 let resourcesLayer = L.featureGroup();
 
 // define layers
 let layers = {
     "All Responses": totalResponseLayer,
-    "Stories about tenant harassment": harrassmentLayer,
+    "Stories about tenant harassment": harassmentLayer,
     "Stories about housing insecurity": insecureLayer,
     "Community solutions": resourcesLayer
 }
