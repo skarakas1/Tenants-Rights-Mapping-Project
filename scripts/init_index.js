@@ -162,25 +162,109 @@ let allPoints = []; // array for all the data points
 let sideBarNav = document.getElementById("sidebarnav");
 let sideBarText = document.getElementById("sidebartext");
 
+// Variable tracking current sidebar tab changes based on button clicked
+// might not be the intelligent solution
+// right now, currentTab is not changing at all
+let currentTab = 0
+document.getElementById(harassmentButton).addEventListener("click", function(){
+    currentTab = 0;
+}
+);
+document.getElementById(securityButton).addEventListener("click", function(){
+    currentTab = 1;
+}
+);
+document.getElementById(resourcesButton).addEventListener("click", function(){
+    currentTab = 2;
+}
+);
+document.getElementById(nonRentersButton).addEventListener("click", function(){
+    currentTab = 3;
+}
+);
 
 function getSurveyInfo(survey){
     console.log('survey')
     console.log(survey)
     // let result = survey.resources
-    let result;
+    // let result;
+
+    let harassmentTab, securityTab, resourcesTab, notRentingTab;
     let thisZipcode = document.createElement('div')
-    if (survey.resources){
-        result = survey.resources
+
+    // if renter
+    // generate tabs for harassment story/security story/resources
+    // tab selected populates text of sidebar
+    if (survey.renter)
+    {
+        if (survey.harassmentYN)
+        {
+            if (survey.harassment != "")
+            {
+                harassmentTab = survey.harassment
+            }
+            else
+            {
+                harassmentTab = "I have experienced harassment."
+            }
+        }
+        else
+        {
+            harassmentTab = ""
+        }
+        if (survey.secureYN)
+        {
+            if (survey.insecurity != "")
+            {
+                securityTab = survey.insecurity
+            }
+            else
+            {
+                securityTab = "I have experienced housing insecurity."
+            }
+        }
+        if (survey.resources){
+            resourcesTab = survey.resources
+        }
+        else{
+            resourcesTab = "" // empty string might cause problems
+        }
     }
-    else{
-        // result = "no resources"
+    else
+    {
+        notRentingTab = survey.reasons
     }
-    thisZipcode.innerHTML = result
+    
+    // innerHTML security concerns: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+    // trying alternative https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
+    //thisZipcode.innerHTML = result 
+
+    
+    if (currentTab == 0)
+    {
+        thisZipcode.textContent = harassmentTab
+    }
+    else if (currentTab == 1)
+    {
+        thisZipcode.textContent = securityTab
+    }
+    else if (currentTab == 2)
+    {
+        thisZipcode.textContent = resourcesTab
+    }
+    else if (currentTab == 4)
+    {
+        thisZipcode.textContent = notRentingTab
+    }
+    else
+    {
+        thisZipcode.textContent = "ERROR"
+    }
     console.log('thisZipcode')
     console.log(thisZipcode)
     // console.log(thisZipcode.innerHTML)
     sideBarText.appendChild(thisZipcode)
-    return result
+    return thisZipcode
 }
 //function for clicking on polygons
 function onEachFeature(feature, layer) {
