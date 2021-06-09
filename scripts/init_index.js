@@ -162,25 +162,144 @@ let allPoints = []; // array for all the data points
 let sideBarNav = document.getElementById("sidebarnav");
 let sideBarText = document.getElementById("sidebartext");
 
+// Variable tracking current sidebar tab changes based on button clicked
+// might not be the intelligent solution
+// right now, currentTab is not changing at all
+let currentTab = 0
+
+// function to create Tab Menu
+function createTabMenu(id,readableName,tabIndex){
+    console.log('hi')
+    let tabMenu = document.getElementById('sidebarnav')
+    let thisTabButton = document.createElement('button')
+    thisTabButton.id = id
+    thisTabButton.setAttribute("tabIndex",tabIndex)
+    thisTabButton.innerHTML = readableName
+    // this is the event listener for the buttons
+    // you will need to loop through the survey data to populate this correctly
+    // let me know if you get stuck!
+    thisTabButton.addEventListener('click',function(){
+        currentTab = tabIndex
+        // check to console to see currentTab change onClick
+        console.log('the current tab is: '+currentTab)
+        // Todo: create a function to update the data here
+        // i believe you run 
+        // `if (currentTab == 0)` in getSurveyInfo()
+        // which will only fire once. are you able to re-populate the survey data correctly?
+        // if not, then without looking further my recommendation is:
+            // 1. add the data for each of the tabs inside of the data-attribute for the button
+            // 2. loop through and regenerate the content in `thisZipcode.textContent = harassmentTab`
+        
+    })
+    // add this new tabButton to the tabMenu
+    tabMenu.appendChild(thisTabButton)
+}
+
+// create the tabMenu for the following:
+createTabMenu('harassmentButton','Tenant harassment stories',0)
+createTabMenu('securityButton','Housing insecurity stories',1)
+createTabMenu('resourcesButton','Community solutions',2)
+createTabMenu('nonRentersButton','Nonrenters',3)
+
+// document.getElementById('harassmentButton').addEventListener("click", function(){
+//     currentTab = 0;
+// }
+// );
+// document.getElementById('securityButton').addEventListener("click", function(){
+//     currentTab = 1;
+// }
+// );
+// document.getElementById('resourcesButton').addEventListener("click", function(){
+//     currentTab = 2;
+// }
+// );
+// document.getElementById('nonRentersButton').addEventListener("click", function(){
+//     currentTab = 3;
+// }
+// );
 
 function getSurveyInfo(survey){
     console.log('survey')
     console.log(survey)
     // let result = survey.resources
-    let result;
+    // let result;
+
+    let harassmentTab, securityTab, resourcesTab, notRentingTab;
     let thisZipcode = document.createElement('div')
-    if (survey.resources){
-        result = survey.resources
+
+    // if renter
+    // generate tabs for harassment story/security story/resources
+    // tab selected populates text of sidebar
+    if (survey.renter)
+    {
+        if (survey.harassmentYN)
+        {
+            if (survey.harassment != "")
+            {
+                harassmentTab = survey.harassment
+            }
+            else
+            {
+                harassmentTab = "I have experienced harassment."
+            }
+        }
+        else
+        {
+            harassmentTab = ""
+        }
+        if (survey.secureYN)
+        {
+            if (survey.insecurity != "")
+            {
+                securityTab = survey.insecurity
+            }
+            else
+            {
+                securityTab = "I have experienced housing insecurity."
+            }
+        }
+        if (survey.resources){
+            resourcesTab = survey.resources
+        }
+        else{
+            resourcesTab = "" // empty string might cause problems
+        }
     }
-    else{
-        // result = "no resources"
+    else
+    {
+        notRentingTab = survey.reasons
     }
-    thisZipcode.innerHTML = result
+    
+    // innerHTML security concerns: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+    // trying alternative https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
+    //thisZipcode.innerHTML = result 
+
+    
+    if (currentTab == 0)
+    {
+        thisZipcode.textContent = harassmentTab
+    }
+    else if (currentTab == 1)
+    {
+        thisZipcode.textContent = securityTab
+    }
+    else if (currentTab == 2)
+    {
+        thisZipcode.textContent = resourcesTab
+    }
+    else if (currentTab == 4)
+    {
+        thisZipcode.textContent = notRentingTab
+    }
+    else
+    {
+        thisZipcode.textContent = "ERROR"
+    }
     console.log('thisZipcode')
     console.log(thisZipcode)
     // console.log(thisZipcode.innerHTML)
     sideBarText.appendChild(thisZipcode)
-    return result
+    return thisZipcode
 }
 //function for clicking on polygons
 function onEachFeature(feature, layer) {
