@@ -138,7 +138,7 @@ function popMap(object){//function to populate the map
     if(object.harassmentYN){//add markers/layer for 'have experienced harassment'
         circleOptions.fillColor = "red";//set marker color
         circleOptions.fillOpacity = ".3"
-        addMarkers(object, harrassmentLayer);
+        addMarkers(object, harassmentLayer);
     }
     if(object.secureYN){//add markers/layer for 'feel housing insecure'
         circleOptions.fillColor = "red";
@@ -282,11 +282,11 @@ function getBoundary(layer){
 //--------------------LAYER CONTROL----------
 //-----------------------------------------
 //add layer control box
-allLayers = L.featureGroup([totalResponseLayer, harrassmentLayer, insecureLayer, resourcesLayer]);
+allLayers = L.featureGroup([totalResponseLayer, harassmentLayer, insecureLayer, resourcesLayer]);
 function layerControl(layerGroup){
     totalResponseLayer.addTo(map);
     insecureLayer.addTo(map);
-    harrassmentLayer.addTo(map);
+    harassmentLayer.addTo(map);
     resourcesLayer.addTo(map);
     L.control.layers(null,layers, {collapsed: false}).addTo(map);
 }
