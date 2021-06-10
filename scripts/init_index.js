@@ -129,7 +129,7 @@ let circleOptions = {
     color: "#FFCAB1",
     weight: 1,
     opacity: 1,
-    fillOpacity: .3
+    fillOpacity: .25
 }
 //function for add markers & assign layer   
 function addMarkers(data, group){
@@ -139,13 +139,18 @@ function popMap(object){//function to populate the map
     addMarkers(object, totalResponseLayer);//add marker/layer regardless for total responses
     if(object.harassmentYN){//add markers/layer for 'have experienced harassment'
         circleOptions.fillColor = "red";//set marker color
-        circleOptions.fillOpacity = ".3"
+        circleOptions.fillOpacity = ".25"
         addMarkers(object, harassmentLayer);
     }
     if(object.secureYN){//add markers/layer for 'feel housing insecure'
         circleOptions.fillColor = "red";
-        circleOptions.fillOpacity = ".3"
+        circleOptions.fillOpacity = ".25"
         addMarkers(object, insecureLayer);
+    }
+    if(object.resources){
+        circleOptions.fillColor = "red";
+        circleOptions.fillOpacity = ".25"
+        addMarkers(object, resourcesLayer);
     }
 }
 
