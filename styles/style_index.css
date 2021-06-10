@@ -239,6 +239,23 @@ footer{
   /* Change the background color of the dropdown button when the dropdown content is shown */
   .dropdown:hover .dropbtn {background-color:#ffcab175;} 
 
+  /* create classes for each tab */
+  .harassmentContent{
+    display:none
+  }
+
+  .securityContent{
+    display:none
+  }
+
+  .resourcesContent{
+    display:none
+  }
+
+  .notRentingContent{
+    display:none
+  }
+
   @media all and (max-width:700px){
     body{
       grid-template-areas:
