@@ -243,6 +243,13 @@ function setContentToTab(tabindex){
     let numDivs = divsToChange.length // Number of surveys, so works for all divs
     for (i = 0; i < numDivs; i++){
         divsToChange[i].style.display = "grid"
+        // if (hasClass(divsToChange[i]), globalZip){
+        //     divsToChange[i].style.display = "grid"
+        // }
+        // else
+        // {
+        //     divsToChange[i].style.display = "none"
+        // }
     }
 
     // Hide other tabs
@@ -394,15 +401,18 @@ function zipCodeClick(zipcode){
 
 
 //add layer control box
-allLayers = L.featureGroup([totalResponseLayer, harassmentLayer, insecureLayer, resourcesLayer]);
-function layerControl(layerGroup){
-    totalResponseLayer.addTo(map);
-    insecureLayer.addTo(map);
-    harassmentLayer.addTo(map);
-    resourcesLayer.addTo(map);
-    L.control.layers(null,layers, {collapsed: false}).addTo(map);
+function createLegend(){
+    
 }
-layerControl(allLayers);
+// allLayers = L.featureGroup([totalResponseLayer, harassmentLayer, insecureLayer, resourcesLayer]);
+// function layerControl(layerGroup){
+//     totalResponseLayer.addTo(map);
+//     insecureLayer.addTo(map);
+//     harassmentLayer.addTo(map);
+//     resourcesLayer.addTo(map);
+//     L.control.layers(null,layers, {collapsed: false}).addTo(map);
+// }
+// layerControl(allLayers);
 
 //-----------------------------------------
 //--------------------Geocode Search--------
