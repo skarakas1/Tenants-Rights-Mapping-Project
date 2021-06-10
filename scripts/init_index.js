@@ -153,7 +153,7 @@ function popMap(object){//function to populate the map
 //declarations for turf stuff
 let allLayers;
 // this is the boundary layer located as a geojson in the /data/ folder 
-const boundaryLayer = "../data/la_zipcodes.geojson"
+const boundaryLayer = "./data/la_zipcodes.geojson"   //../data/la_zipcodes.geojson"
 let boundary; // place holder for the data
 let collected; // variable for turf.js collected points 
 let allPoints = []; // array for all the data points
@@ -402,6 +402,7 @@ function onEachFeature(feature, layer) {
         let surveyData = feature.properties.values //array of all the survey data in a zipcode
         //TO GET INDV DATA IT MUST HAPPEN IN THIS FOLLOWING LOOP>>>
         surveyData.forEach(survey => getSurveyInfo(survey))
+        console.log("test1")
         //count the values within the polygon by using .length on the values array created from turf.js collect
         let count = feature.properties.values.length
         // console.log(count) // see what the count is on click
