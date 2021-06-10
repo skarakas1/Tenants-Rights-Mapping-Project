@@ -1,4 +1,4 @@
-//variable declarations
+ //variable declarations
 let id = 0;//create a unique id for each survey response object
 let objectArray = [];//create an array to store the objects
 
@@ -183,16 +183,57 @@ function createTabMenu(id,readableName,tabIndex){
         // check to console to see currentTab change onClick
         console.log('the current tab is: '+currentTab)
         // Todo: create a function to update the data here
+        setContentToTab(currentTab)
         // i believe you run 
         // `if (currentTab == 0)` in getSurveyInfo()
         // which will only fire once. are you able to re-populate the survey data correctly?
         // if not, then without looking further my recommendation is:
             // 1. add the data for each of the tabs inside of the data-attribute for the button
             // 2. loop through and regenerate the content in `thisZipcode.textContent = harassmentTab`
-        
     })
     // add this new tabButton to the tabMenu
     tabMenu.appendChild(thisTabButton)
+}
+
+const tabIndices = {
+    0: "harassmentContent",
+    1: "securityContent",
+    2: "resourcesContent",
+    3: "notRentingContent"
+    // continue for all tabs, correct numbering later
+}
+
+function setContentToTab(tabindex){
+//function setContentToTab(tabindex,targetClass){ // I don't see when targetClass would get used
+    let lookUpTarget = tabIndices[tabindex]
+    console.log("lookUpTarget is " + lookUpTarget)
+
+    // creates array
+    let divsToChange = document.getElementsByClassName(lookUpTarget)
+
+    // Display current tab
+    let numDivs = divsToChange.length // Number of surveys, so works for all divs
+    for (i = 0; i < numDivs; i++)
+    {
+        divsToChange[i].style.display = "grid"
+    }
+
+    // Hide other tabs
+    for (i = 0; i < 4; i++)
+    {
+        if (i != tabindex)
+        {
+            lookUpTarget = tabIndices[i]
+            divsToChange = document.getElementsByClassName(lookUpTarget)
+            console.log("i = " + i + " lookup=" +lookUpTarget)
+            for (j = 0; j < numDivs; j++)
+            {
+                divsToChange[j].style.display = "none"
+            }
+        }
+        // else do nothing :)
+        // I think this is better for readability to separate
+    }
 }
 
 // create the tabMenu for the following:
@@ -218,6 +259,15 @@ createTabMenu('nonRentersButton','Nonrenters',3)
 // }
 // );
 
+// 1.	In the getSurveyInfo function, create divs for each survey data with a unique ID (UID) and also separate the content into divs with separate tab-index data attributes. What I mean is you want to create a `div` for the harassment data, a `div` for resources, and so forth. Important: make sure that each div has the corresponding data attribute with the ID set in the createTabMenu function. i.e. div for harassment stories should be in the div with the data attribute 0. An example output should be: `<div id=”survey_0” tab-index=”1”> here are the resources I recommend for tenants help</div>` 
+
+//Hint: You will need to create a unique ID for each survey data and assign it to each div.
+//2.	Modify the event listener on line 185, so that when a user clicks on the tab, that it sets that content’s UID to the ID of the tab-index of the corresponding tab, i.e. when I click on resources, it will show me this data’s UID and the data in data-attribute for “1”.
+//Hint: You will need two parameters, 1 for the tab index and 1 for the survey UID, then you will look up each to return the appropriate `div`.
+
+
+
+
 function getSurveyInfo(survey){
     console.log('survey')
     console.log(survey)
@@ -232,6 +282,7 @@ function getSurveyInfo(survey){
     // tab selected populates text of sidebar
     if (survey.renter)
     {
+        notRentingTab = ""
         if (survey.harassmentYN)
         {
             if (survey.harassment != "")
@@ -240,7 +291,7 @@ function getSurveyInfo(survey){
             }
             else
             {
-                harassmentTab = "I have experienced harassment."
+                harassmentTab = "[This tenant has experienced harassment and did not share a story.]"
             }
         }
         else
@@ -255,52 +306,92 @@ function getSurveyInfo(survey){
             }
             else
             {
-                securityTab = "I have experienced housing insecurity."
+                securityTab = "[This tenant has experienced housing insecurity and did not share a story.]"
             }
         }
         if (survey.resources){
             resourcesTab = survey.resources
         }
         else{
-            resourcesTab = "" // empty string might cause problems
+            resourcesTab = "" // empty string :)
         }
     }
     else
     {
         notRentingTab = survey.reasons
     }
+
+    let surveyID = "survey_" + survey.id
+    console.log(surveyID)
+    // Make the divs contain the data
+    // how to make div id = a variable? how to make inner text a variable???
+    //<div id=surveyID tab-index="0">harassmentTab</div> leads to problems
     
     // innerHTML security concerns: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
     // trying alternative https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
     //thisZipcode.innerHTML = result 
-
+    let allSurveyContentDiv = document.getElementById("sidebarcontent")
+    let thisSurveysDiv = document.createElement('div')
+    thisSurveysDiv.id = surveyID
+    allSurveyContentDiv.appendChild(thisSurveysDiv)
+    let targetContainer = document.getElementById(surveyID)
     
-    if (currentTab == 0)
-    {
-        thisZipcode.textContent = harassmentTab
-    }
-    else if (currentTab == 1)
-    {
-        thisZipcode.textContent = securityTab
-    }
-    else if (currentTab == 2)
-    {
-        thisZipcode.textContent = resourcesTab
-    }
-    else if (currentTab == 4)
-    {
-        thisZipcode.textContent = notRentingTab
-    }
-    else
-    {
-        thisZipcode.textContent = "ERROR"
-    }
+    // harassmentTabContent corresponds w/ 0
+    let harassmentTabContent = document.createElement('div')
+    harassmentTabContent.className = 'harassmentContent'
+    harassmentTabContent.textContent = harassmentTab
+    harassmentTabContent.setAttribute("tabindex","0")
+    targetContainer.appendChild(harassmentTabContent)
+
+    // securityTabContent corresponds w/ 1
+    let securityTabContent = document.createElement('div')
+    securityTabContent.className = 'securityContent'
+    securityTabContent.textContent = securityTab
+    securityTabContent.setAttribute("tabindex","1")
+    targetContainer.appendChild(securityTabContent)
+
+    // resourcesTabContent corresponds w/ 2
+    let resourcesTabContent = document.createElement('div')
+    resourcesTabContent.className = 'resourcesContent'
+    resourcesTabContent.textContent = resourcesTab
+    resourcesTabContent.setAttribute("tabindex","2")
+    targetContainer.appendChild(resourcesTabContent)
+
+    // notRentingTabContent corresponds w/ 3
+    let notRentingTabContent = document.createElement('div')
+    notRentingTabContent.className = 'notRentingContent'
+    notRentingTabContent.textContent = notRentingTab
+    notRentingTabContent.setAttribute("tabindex","3")
+    targetContainer.appendChild(notRentingTabContent)
+
+    // I THINK THE BELOW CODE IS NOT USEFUL ANYMORE
+    // if (currentTab == 0)
+    // {
+    //     thisZipcode.textContent = harassmentTab // later change name maybe bc confusing
+    // }
+    // else if (currentTab == 1)
+    // {
+    //     thisZipcode.textContent = securityTab
+    // }
+    // else if (currentTab == 2)
+    // {
+    //     thisZipcode.textContent = resourcesTab
+    // }
+    // else if (currentTab == 3)
+    // {
+    //     thisZipcode.textContent = notRentingTab
+    // }
+    // else
+    // {
+    //     thisZipcode.textContent = "ERROR"
+    // }
     console.log('thisZipcode')
     console.log(thisZipcode)
     // console.log(thisZipcode.innerHTML)
     sideBarText.appendChild(thisZipcode)
-    return thisZipcode
+    return thisZipcode//.textContent
 }
+
 //function for clicking on polygons
 function onEachFeature(feature, layer) {
     // console.log(feature.properties)
