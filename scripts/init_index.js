@@ -242,7 +242,10 @@ function setContentToTab(tabindex){
      // Display current tab
     let numDivs = divsToChange.length // Number of surveys, so works for all divs
     for (i = 0; i < numDivs; i++){
+        // if statement to check if class zipcode == global zipcode, display
         divsToChange[i].style.display = "grid"
+        // else hide
+        console.log(globalZip)
     }
 
     // Hide other tabs
@@ -257,6 +260,20 @@ function setContentToTab(tabindex){
         // else do nothing :)
     }
 }
+
+
+// changeZipcodes
+// |
+// |
+// |
+// ---> clickedzIp to globalZip = New Zipcode?
+// |   |
+// |   \------> 
+// |
+// --->content?
+
+
+
 
 function getSurveyInfo(survey){
     // let result = survey.resources
@@ -376,19 +393,30 @@ function onEachFeature(feature, layer) {
         }
 }
 
+function repopulateSideContent(data,zipcode){
+    console.log(data.address1);
+    console.log(zipcode);
+    if (data.address1 == zipcode){
+        console.log('YAY!!!!')
+    }
+    
+}
+
 function zipCodeClick(zipcode){
-    //globalZip = zipcode;
+    globalZip = zipcode;
     console.log(globalZip)
     console.log(objectArray);
-    for(survey in objectArray){
-        console.log('survey address1')
-        console.log(survey.address1);
+    objectArray.forEach(data=>repopulateSideContent(data,zipcode))
+    // for(survey in objectArray){
+    //     console.log('survey address1')
+    //     console.log(survey);
+
         // let zipCheck = survey.address1;
         // if(zipCheck.includes(zipcode)){
         //     console.log('zipcode')
         //     console.log(zipcode)
-        }
     }
+    
 
 
 
