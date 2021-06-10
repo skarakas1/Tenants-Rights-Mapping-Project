@@ -2,7 +2,7 @@
 body{
     font-family: 'Montserrat', sans-serif;
     display:grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr 1.5fr;
     grid-template-rows: repeat(4, auto);
     grid-template-areas:
     "nav nav nav"
@@ -33,7 +33,6 @@ header{
     padding:10px;
     border-radius: .3em;
     color: #474440;
-    /* background-image: url(https://upload.wikimedia.org/wikipedia/commons/f/fa/Small_Apartment.jpg); */
     background-color: #968e856c;
     text-shadow: 1px 1px #FFCAB1;
     box-shadow:
@@ -99,58 +98,64 @@ p{
 /*------------------------------SIDEBAR STYLES*/
 #sidebar{
     grid-area: sidebar;
-    /* grid-column: 1;
-    grid-row-start: 2;
-    grid-row-end: 4; */
     background-color: #968e856c;
     color: #474440;
-    height: auto;
-    /* height: auto;
-    width: 100%; */
-    /* z-index: 9999; */
     border: 2px solid #47444094;
     border-radius: .3em;
-    /* display: grid;
-    grid-template-areas: 
-    "nav"
-    "text"; */
-    /* grid-template-columns: 1fr;
-    grid-template-rows: .2fr auto; */
     box-shadow:
       0 2.8px 2.2px rgba(0, 0, 0, 0.034),
       0 6.7px 5.3px rgba(0, 0, 0, 0.048),
       0 12.5px 10px rgba(0, 0, 0, 0.06),
       0 22.3px 17.9px rgba(0, 0, 0, 0.072);
+    height: 60vh;
+    /* width:1fr; */
+    max-width: 100%;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "nav"
+      "text";
+    overflow:scroll
 }
-#sidebartext{
+#sidebartext p{
   margin: 4px;
+  grid-area: text;
+}
+
+#sidebartext div{
+  max-width: 100%;
 }
 /*---------------------SIDE BAR NAV*/
     /* Add a black background color to the top navigation */
 #sidebarnav{
-    /* grid-area: "nav"; */
-    background-color: #662c2c;
-    overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(4,auto);
+    grid-area: nav;
+    background-color: #ddd;
+    /* overflow: hidden; */
   }
   
   /* Style the links inside the navigation bar */
-  #sidebarnav a {
-    float: left;
-    color: #f2f2f2;
+  
+  #sidebarnav button {
+    color: #474440;
+    background-color: rgba(255, 166, 0, 0.747);
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    border-radius: .3em;
   }
   
   /* Change the color of links on hover */
-  #sidebarnav a:hover {
+  #sidebarnav button:hover {
     background-color: #ddd;
     color: black;
   }
   
   /* Add a color to the active/current link */
-  #sidebarnav a.active {
+  #sidebarnav button.active {
     background-color: #474440;
     color: white;
   }

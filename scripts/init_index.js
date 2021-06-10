@@ -17,6 +17,8 @@ let layers = {
 
 let globalZip = "this isn't broken!";
 
+let objectArray = [];
+
 // declarations for turf stuff
 let allLayers;
 // this is the boundary layer located as a geojson in the /data/ folder 
@@ -154,6 +156,7 @@ function createObject(data, id){
         "email": data.pleaseenteryouremailaddress
     }//THIS IS THE SURVEY DATA OBJECT
 
+    objectArray.push(thisData);
     //turf requires lng,lat format other than lat,lng
     let thisPoint = turf.point([Number(data.lng),Number(data.lat)],{thisData})// create the turfJS point
     allPoints.push(thisPoint)// put all the turfJS points into `allPoints`
@@ -259,93 +262,94 @@ function getSurveyInfo(survey){
     // let result = survey.resources
     // let result;
 
+
     let harassmentTab, securityTab, resourcesTab, notRentingTab;
     let thisZipcode = document.createElement('div')
     thisZipcode.setAttribute('class',globalZip)
     
 
-    // if renter
-    // generate tabs for harassment story/security story/resources
-    // tab selected populates text of sidebar
-    if (survey.renter){
-        notRentingTab = "";
-        if (survey.harassmentYN){
-            if (survey.harassment != ""){
-                harassmentTab = survey.harassment
+        // if renter
+        // generate tabs for harassment story/security story/resources
+        // tab selected populates text of sidebar
+        if (survey.renter){
+            notRentingTab = "";
+            if (survey.harassmentYN){
+                if (survey.harassment != ""){
+                    harassmentTab = survey.harassment
+                }
+                else{
+                    harassmentTab = "[This tenant has experienced harassment and did not share a story.]"
+                }
             }
             else{
-                harassmentTab = "[This tenant has experienced harassment and did not share a story.]"
+                harassmentTab = "";
+            }
+            if (survey.secureYN){
+                if (survey.insecurity != ""){
+                    securityTab = survey.insecurity
+                }
+                else{
+                    securityTab = "[This tenant has experienced housing insecurity and did not share a story.]"
+                }
+            }
+            if (survey.resources){
+                resourcesTab = survey.resources
+            }
+            else{
+                resourcesTab = ""; // empty string :)
             }
         }
         else{
-            harassmentTab = "";
+            notRentingTab = survey.reasons
         }
-        if (survey.secureYN){
-            if (survey.insecurity != ""){
-                securityTab = survey.insecurity
-            }
-            else{
-                securityTab = "[This tenant has experienced housing insecurity and did not share a story.]"
-            }
-        }
-        if (survey.resources){
-            resourcesTab = survey.resources
-        }
-        else{
-            resourcesTab = ""; // empty string :)
-        }
-    }
-    else{
-        notRentingTab = survey.reasons
-    }
 
-    let surveyID = "survey_" + survey.id
-    // Make the divs contain the data
-    // how to make div id = a variable? how to make inner text a variable???
-    //<div id=surveyID tab-index="0">harassmentTab</div> leads to problems
-    
-    // innerHTML security concerns: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
-    // trying alternative https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
-    //thisZipcode.innerHTML = result 
-    let allSurveyContentDiv = document.getElementById("sidebarcontent")
-    let thisSurveysDiv = document.createElement('div')
-    thisSurveysDiv.id = surveyID
-    allSurveyContentDiv.appendChild(thisSurveysDiv)
-    let targetContainer = document.getElementById(surveyID)
-    
-    
+        let surveyID = "survey_" + survey.id
+        // Make the divs contain the data
+        // how to make div id = a variable? how to make inner text a variable???
+        //<div id=surveyID tab-index="0">harassmentTab</div> leads to problems
+        
+        // innerHTML security concerns: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+        // trying alternative https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
+        //thisZipcode.innerHTML = result 
+        let allSurveyContentDiv = document.getElementById("sidebarcontent")
+        let thisSurveysDiv = document.createElement('div')
+        thisSurveysDiv.id = surveyID
+        allSurveyContentDiv.appendChild(thisSurveysDiv)
+        let targetContainer = document.getElementById(surveyID)
+        
+        
 
-    
-    // harassmentTabContent corresponds w/ 0
-    let harassmentTabContent = document.createElement('div')
-    harassmentTabContent.className = 'harassmentContent'
-    harassmentTabContent.textContent = harassmentTab
-    harassmentTabContent.setAttribute("tabindex","0")
-    targetContainer.appendChild(harassmentTabContent)
+        
+        // harassmentTabContent corresponds w/ 0
+        let harassmentTabContent = document.createElement('div')
+        harassmentTabContent.className = 'harassmentContent'
+        harassmentTabContent.textContent = harassmentTab
+        harassmentTabContent.setAttribute("tabindex","0")
+        targetContainer.appendChild(harassmentTabContent)
 
-    // securityTabContent corresponds w/ 1
-    let securityTabContent = document.createElement('div')
-    securityTabContent.className = 'securityContent'
-    securityTabContent.textContent = securityTab
-    securityTabContent.setAttribute("tabindex","1")
-    targetContainer.appendChild(securityTabContent)
+        // securityTabContent corresponds w/ 1
+        let securityTabContent = document.createElement('div')
+        securityTabContent.className = 'securityContent'
+        securityTabContent.textContent = securityTab
+        securityTabContent.setAttribute("tabindex","1")
+        targetContainer.appendChild(securityTabContent)
 
-    // resourcesTabContent corresponds w/ 2
-    let resourcesTabContent = document.createElement('div')
-    resourcesTabContent.className = 'resourcesContent'
-    resourcesTabContent.textContent = resourcesTab
-    resourcesTabContent.setAttribute("tabindex","2")
-    targetContainer.appendChild(resourcesTabContent)
+        // resourcesTabContent corresponds w/ 2
+        let resourcesTabContent = document.createElement('div')
+        resourcesTabContent.className = 'resourcesContent'
+        resourcesTabContent.textContent = resourcesTab
+        resourcesTabContent.setAttribute("tabindex","2")
+        targetContainer.appendChild(resourcesTabContent)
 
-    // notRentingTabContent corresponds w/ 3
-    let notRentingTabContent = document.createElement('div')
-    notRentingTabContent.className = 'notRentingContent'
-    notRentingTabContent.textContent = notRentingTab
-    notRentingTabContent.setAttribute("tabindex","3")
-    targetContainer.appendChild(notRentingTabContent)
+        // notRentingTabContent corresponds w/ 3
+        let notRentingTabContent = document.createElement('div')
+        notRentingTabContent.className = 'notRentingContent'
+        notRentingTabContent.textContent = notRentingTab
+        notRentingTabContent.setAttribute("tabindex","3")
+        targetContainer.appendChild(notRentingTabContent)
 
-    sideBarText.appendChild(thisZipcode)
-    return thisZipcode//.textContent
+        sideBarText.appendChild(thisZipcode)
+        return thisZipcode//.textContent
 }
 
 //function for clicking on polygons
@@ -358,10 +362,9 @@ function onEachFeature(feature, layer) {
         //TO GET INDV DATA IT MUST HAPPEN IN THIS FOLLOWING LOOP>>>
         surveyData.forEach(survey => getSurveyInfo(survey))
         //count the values within the polygon by using .length on the values array created from turf.js collect
-        let count = feature.properties.values.length
+        //let count = feature.properties.values.length
         // console.log(count) // see what the count is on click
         //this is thesurvey data/zip
-
         layer.on('click',function(){zipCodeClick(zipcode)})
     }
     else{
@@ -374,9 +377,19 @@ function onEachFeature(feature, layer) {
 }
 
 function zipCodeClick(zipcode){
-    globalZip = zipcode;
+    //globalZip = zipcode;
     console.log(globalZip)
-}
+    console.log(objectArray);
+    for(survey in objectArray){
+        console.log('survey address1')
+        console.log(survey.address1);
+        // let zipCheck = survey.address1;
+        // if(zipCheck.includes(zipcode)){
+        //     console.log('zipcode')
+        //     console.log(zipcode)
+        }
+    }
+
 
 
 
@@ -408,4 +421,3 @@ layerControl(allLayers);
 
 // map.addControl(search);
 //console.log(GeoSearch.OpenStreetMapProvider)
-
