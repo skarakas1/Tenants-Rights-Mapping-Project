@@ -1,5 +1,5 @@
 # Tenants' Rights Mapping Project
-This is the project of Ray Hsiao, Brian Zamora, and Sam Karakas for Asian American Studies 191A, taught by Albert Kochaphum.
+This is the project of Ray Hsiao, Brian Zamora, and Sam Karakas for Asian American Studies 191A, taught by Albert Kochaphum. Access the website [here](https://skarakas1.github.io/Tenants-Rights-Mapping-Project/). (Ideally, we'd lead you to the landing page where you can select what language of the site you want to view, but that's not complete yet.)
 
 ## Table of Contents
 * [Objective](#objective)
