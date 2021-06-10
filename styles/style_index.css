@@ -53,6 +53,25 @@ ul{
 li{
    display: inline;
 }
+/*header*/
+#description a{
+  color:#474440;
+}
+#description a:link{
+  text-decoration: underline;
+}
+#description a:visited{
+  text-decoration: none;
+}
+#description a:hover{
+  text-decoration: none;
+  background-color:lightgrey;
+  border-radius: .5em;
+  padding: 2px;
+}
+#description a:active{
+  text-decoration: none;
+}
 /*------------------------------LINK STYLES*/
 .nonDrop a{
     color:#474440;
@@ -261,6 +280,26 @@ footer{
   .notRentingContent{
     display:none
   }
+
+  /*footer*/
+footer a{
+    color:#474440;
+}
+footer a:link{
+    text-decoration:underline;
+}
+footer a:visited{
+    text-decoration: none;
+}
+footer a:hover{
+    text-decoration: none;
+    background-color:lightgrey;
+    border-radius: .5em;
+    padding: 2px;
+}
+footer a:active{
+    text-decoration: none;
+}
 
   @media all and (max-width:700px){
     body{
