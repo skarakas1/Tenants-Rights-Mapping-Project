@@ -18,10 +18,9 @@ We aim to address communities in the broader Los Angeles area, with existing or 
 
 
 ## What technology was used
-- assignment 5
-- explanation of file structure here?
+We are using Github Pages for free website hosting and our code is displayed publicly on Github. The survey is in Google Forms and responses are stored in Google Sheets. We geocoded the zip codes with Google Apps Script. The auto-translations are provided by Google translate.
 
-We are using Github Pages for free website hosting and our code is displayed publicly on Github. The survey is in Google Forms and responses are stored in Google Sheets. We geocoded the zip codes with Google Apps Script.
+There are three pages on the site right now: the main page, the landing page, and a survey page. Each has their own HTML file and corresponding JS and CSS files.
 
 
 ## How it can be repurposed
@@ -35,7 +34,7 @@ We are using free services so money will not be a concern in future maintenance.
 
 
 ## Room for Improvement
-We may try to offer a function for users to be able to make their own survey translations, but this could prove difficult to accomplish due to the necessity of proof-reading and potential sustainability concerns.
+We may try to offer a function for users to be able to make their own survey translations, but this could prove difficult to accomplish due to the necessity of proof-reading and potential sustainability concerns. For now, we have Google translated options.
 
 
 ## Acknowledgements
