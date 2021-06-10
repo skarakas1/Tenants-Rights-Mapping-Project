@@ -1,7 +1,7 @@
-//HELLO WE ARE GLOBAL VARIABLES
-let id = 0;//create a unique id for each survey response object
+// HELLO WE ARE GLOBAL VARIABLES
+let id = 0; // create a unique id for each survey response object
 
-//create Leaflet feature group layers
+// create Leaflet feature group layers
 let totalResponseLayer = L.featureGroup();
 let harassmentLayer = L.featureGroup();
 let insecureLayer = L.featureGroup();
@@ -15,9 +15,9 @@ let layers = {
     "Community solutions": resourcesLayer
 }
 
-let globalZip = "this is broken!";
+let globalZip = "this isn't broken!";
 
-//declarations for turf stuff
+// declarations for turf stuff
 let allLayers;
 // this is the boundary layer located as a geojson in the /data/ folder 
 const boundaryLayer = "./data/la_zipcodes.geojson"
@@ -25,9 +25,17 @@ let boundary; // place holder for the data
 let collected; // variable for turf.js collected points 
 let allPoints = []; // array for all the data points
 
-//HTML DOM declarations
+// HTML DOM declarations
 let sideBarNav = document.getElementById("sidebarnav");
 let sideBarText = document.getElementById("sidebartext");
+
+const tabIndices = {
+    0: "harassmentContent",
+    1: "securityContent",
+    2: "resourcesContent",
+    3: "notRentingContent"
+    // continue for all tabs, correct numbering later
+}
 
 // Variable tracking current sidebar tab changes based on button clicked
 // might not be the intelligent solution
@@ -62,7 +70,6 @@ let CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/
 //set basemap
 CartoDB_Positron.addTo(map);
 
-//DATA CLEANING & SHEETS AP
 //get the datas as json
 const url = "https://spreadsheets.google.com/feeds/list/16F-aIZ0PutDur9tXTy92JD7rFrHd3YHZB1wCsh9Gs04/on8014x/public/values?alt=json"
 fetch(url)
@@ -73,10 +80,12 @@ fetch(url)
     .then(data =>{
         processData(data)}
         )
-//clean data and make objects
-function processData(theData){
+
+// clean data, send to createObject
+// add points to turf feature collection & geoprocessing
+function processData(data){
     const formattedData = [] /* this array will eventually be populated with the contents of the spreadsheet's rows */
-    const rows = theData.feed.entry // this is the weird Google Sheet API format we will be removing
+    const rows = data.feed.entry // this is the weird Google Sheet API format we will be removing
     // we start a for..of.. loop here 
     for(const row of rows) { 
       const formattedRow = {}
@@ -89,12 +98,39 @@ function processData(theData){
       // add the clean data
       formattedData.push(formattedRow)
     }
-    formattedData.forEach(createObject)//create object and send to global array
+
+    //create object and send to global array
+    formattedData.forEach(createObject)
+
     // step 1: turn allPoints into a turf.js featureCollection
     thePoints = turf.featureCollection(allPoints)
 
     // step 2: run the spatial analysis
     getBoundary(boundaryLayer)
+}
+
+//turf.js geoprocessing and polygons
+function getBoundary(layer){
+    fetch(layer)
+    .then(response => {
+        return response.json();
+        })
+    .then(boundary =>{
+                // set the boundary to data
+                // run the turf collect geoprocessing
+                collected = turf.collect(boundary, thePoints, 'thisData', 'values');                
+                 // here is the geoJson of the `collected` result:
+                 L.geoJson(collected,{onEachFeature: onEachFeature,style:function(feature){
+                    if (feature.properties.values.length > 0) {
+                        return {color: "orange",stroke: true};
+                    }
+                    else{// make the polygon gray and blend in with basemap if it doesn't have any values
+                        return{opacity:0,color:"#efefef"};
+                    }
+                }
+                // add the geojson to the map
+            }).addTo(map)
+        })   
 }
 
 //create survey response object
@@ -125,10 +161,8 @@ function createObject(data, id){
     popMap(thisData);
 }
 
-//-----------------------------------------
-//--------------------POPULATE MAP---------
-//-----------------------------------------
-//create circle marker
+// Populate map
+// create base circle marker
 let circleOptions = {
     radius: 300,
     fillColor: "red",
@@ -138,28 +172,29 @@ let circleOptions = {
     fillOpacity: .25
 }
 
-//function for add markers & assign layer   
-function addMarkers(data, group){
-    group.addLayer(L.circle([data.lat,data.lng],circleOptions).addTo(map))//REMOVED 'bind popup'
-}
-
-function popMap(object){//function to populate the map
-    addMarkers(object, totalResponseLayer);//add marker/layer regardless for total responses
-    if(object.harassmentYN){//add markers/layer for 'have experienced harassment'
-        circleOptions.fillColor = "red";//set marker color
+// function to populate the map
+function popMap(object){
+    addMarkers(object, totalResponseLayer); // add marker/layer regardless for total responses
+    if(object.harassmentYN){ // add markers/layer for 'have experienced harassment'
+        circleOptions.fillColor = "red"; // set marker color
         circleOptions.fillOpacity = ".25"
         addMarkers(object, harassmentLayer);
     }
-    if(object.secureYN){//add markers/layer for 'feel housing insecure'
+    if(object.secureYN){ // add markers/layer for 'feel housing insecure'
         circleOptions.fillColor = "red";
         circleOptions.fillOpacity = ".25"
         addMarkers(object, insecureLayer);
     }
-    if(object.resources){
+    if(object.resources){ // add markers/layer for 'community solutions'
         circleOptions.fillColor = "red";
         circleOptions.fillOpacity = ".25"
         addMarkers(object, resourcesLayer);
     }
+}
+
+// function for add markers & assign layer   
+function addMarkers(data, group){
+    group.addLayer(L.circle([data.lat,data.lng],circleOptions).addTo(map))
 }
 
 // function to create Tab Menu
@@ -167,6 +202,7 @@ function createTabMenu(id,readableName,tabIndex){
     let tabMenu = document.getElementById('sidebarnav')
     let thisTabButton = document.createElement('button')
     thisTabButton.id = id
+    thisTabButton.setAttribute("class",'navButton')
     thisTabButton.setAttribute("tabIndex",tabIndex)
     thisTabButton.innerHTML = readableName
     // this is the event listener for the buttons
@@ -187,13 +223,11 @@ function createTabMenu(id,readableName,tabIndex){
     tabMenu.appendChild(thisTabButton)
 }
 
-const tabIndices = {
-    0: "harassmentContent",
-    1: "securityContent",
-    2: "resourcesContent",
-    3: "notRentingContent"
-    // continue for all tabs, correct numbering later
-}
+// create the tabMenu for the following:
+createTabMenu('harassmentButton','Tenant harassment stories',0)
+createTabMenu('securityButton','Housing insecurity stories',1)
+createTabMenu('resourcesButton','Community solutions',2)
+createTabMenu('nonRentersButton','Nonrenters',3)
 
 function setContentToTab(tabindex){
     // need to filter by zipcode
@@ -202,36 +236,24 @@ function setContentToTab(tabindex){
     // creates array
     let divsToChange = document.getElementsByClassName(lookUpTarget)
 
-        // Display current tab
-    var numDivs = divsToChange.length // Number of surveys, so works for all divs
-    for (i = 0; i < numDivs; i++)
-    {
-            divsToChange[i].style.display = "grid"
+     // Display current tab
+    let numDivs = divsToChange.length // Number of surveys, so works for all divs
+    for (i = 0; i < numDivs; i++){
+        divsToChange[i].style.display = "grid"
     }
 
     // Hide other tabs
-    for (i = 0; i < 4; i++)
-    {
-        if (i != tabindex)
-        {
+    for (i = 0; i < 4; i++){
+        if (i != tabindex){
             lookUpTarget = tabIndices[i]
             divsToChange = document.getElementsByClassName(lookUpTarget)
-            for (j = 0; j < numDivs; j++)
-            {
+            for (j = 0; j < numDivs; j++){
                 divsToChange[j].style.display = "none"
             }
         }
         // else do nothing :)
-        // I think this is better for readability to separate
     }
 }
-
-// create the tabMenu for the following:
-createTabMenu('harassmentButton','Tenant harassment stories',0)
-createTabMenu('securityButton','Housing insecurity stories',1)
-createTabMenu('resourcesButton','Community solutions',2)
-createTabMenu('nonRentersButton','Nonrenters',3)
-
 
 function getSurveyInfo(survey){
     // let result = survey.resources
@@ -245,32 +267,24 @@ function getSurveyInfo(survey){
     // if renter
     // generate tabs for harassment story/security story/resources
     // tab selected populates text of sidebar
-    if (survey.renter)
-    {
-        notRentingTab = ""
-        if (survey.harassmentYN)
-        {
-            if (survey.harassment != "")
-            {
+    if (survey.renter){
+        notRentingTab = "";
+        if (survey.harassmentYN){
+            if (survey.harassment != ""){
                 harassmentTab = survey.harassment
             }
-            else
-            {
+            else{
                 harassmentTab = "[This tenant has experienced harassment and did not share a story.]"
             }
         }
-        else
-        {
-            harassmentTab = ""
+        else{
+            harassmentTab = "";
         }
-        if (survey.secureYN)
-        {
-            if (survey.insecurity != "")
-            {
+        if (survey.secureYN){
+            if (survey.insecurity != ""){
                 securityTab = survey.insecurity
             }
-            else
-            {
+            else{
                 securityTab = "[This tenant has experienced housing insecurity and did not share a story.]"
             }
         }
@@ -278,11 +292,10 @@ function getSurveyInfo(survey){
             resourcesTab = survey.resources
         }
         else{
-            resourcesTab = "" // empty string :)
+            resourcesTab = ""; // empty string :)
         }
     }
-    else
-    {
+    else{
         notRentingTab = survey.reasons
     }
 
@@ -365,29 +378,7 @@ function zipCodeClick(zipcode){
     console.log(globalZip)
 }
 
-//turf.js geoprocessing and polygons
-function getBoundary(layer){
-    fetch(layer)
-    .then(response => {
-        return response.json();
-        })
-    .then(boundary =>{
-                //set the boundary to data
-                // run the turf collect geoprocessing
-                collected = turf.collect(boundary, thePoints, 'thisData', 'values');                
-                 // here is the geoJson of the `collected` result:
-                 L.geoJson(collected,{onEachFeature: onEachFeature,style:function(feature){
-                    if (feature.properties.values.length > 0) {
-                        return {color: "orange",stroke: false};
-                    }
-                    else{// make the polygon gray and blend in with basemap if it doesn't have any values
-                        return{opacity:0,color:"#efefef"};
-                    }
-                }
-                // add the geojson to the map
-            }).addTo(map)
-        })   
-}
+
 
 //add layer control box
 allLayers = L.featureGroup([totalResponseLayer, harassmentLayer, insecureLayer, resourcesLayer]);
@@ -411,10 +402,10 @@ layerControl(allLayers);
 // IF there is no survey filled out for that zipcode, display a message that says something like:
 // ~~"there is no survey data for this zip yet, please fill out the survey"~~
 
-const search = new GeoSearch.GeoSearchControl({
-    provider: new GeoSearch.OpenStreetMapProvider(),
-  });
+// const search = new GeoSearch.GeoSearchControl({
+//     provider: new GeoSearch.OpenStreetMapProvider(),
+//   });
 
-map.addControl(search);
+// map.addControl(search);
 //console.log(GeoSearch.OpenStreetMapProvider)
 
