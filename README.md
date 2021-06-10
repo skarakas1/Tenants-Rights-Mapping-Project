@@ -29,7 +29,11 @@ We plan to share our project with other tenants' rights activists who we could h
 We are using free services so money will not be a concern in future maintenance. Long-term maintenance issues include updating resources to stay relevant and also making sure that what gets added to the site is within the spirit of the project. We will be keeping documentation of how to maintain the site for people to reference. We can make the code and process public so other communities can use it for their own purposes, but keep editing privileges to a smaller group of people to make sure people within the community are the ones who can directly modify the project.
 
 ## Features and Screenshots
-![Example screenshot](./img/screenshot.png)
+![image](https://user-images.githubusercontent.com/40257341/121581628-e4011480-c9e2-11eb-8b9b-2941a1597145.png)
+Click the buttons to see different categories of responses.
+
+![image](https://user-images.githubusercontent.com/40257341/121583382-07c55a00-c9e5-11eb-8e38-63309b61b18a.png)
+Dropdown lets you choose language of survey. (For now, these have been auto-translated by Google translate, so they are not fit to be deployed)
 <!-- If you have screenshots you'd like to share, include them here. -->
 
 
