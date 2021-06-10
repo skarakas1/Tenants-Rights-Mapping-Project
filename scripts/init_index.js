@@ -320,33 +320,37 @@ function getSurveyInfo(survey){
         
 
         
-        // harassmentTabContent corresponds w/ 0
-        let harassmentTabContent = document.createElement('div')
-        harassmentTabContent.className = 'harassmentContent'
-        harassmentTabContent.textContent = harassmentTab
-        harassmentTabContent.setAttribute("tabindex","0")
-        targetContainer.appendChild(harassmentTabContent)
+       // harassmentTabContent corresponds w/ 0
+       let harassmentTabContent = document.createElement('div')
+       harassmentTabContent.className = 'harassmentContent'
+       //harassmentTabContent.textContent = harassmentTab
+       harassmentTabContent.innerHTML = "<ul><li>" + harassmentTab + "</li> </ul>"
+       harassmentTabContent.setAttribute("tabindex","0")
+       targetContainer.appendChild(harassmentTabContent)
 
-        // securityTabContent corresponds w/ 1
-        let securityTabContent = document.createElement('div')
-        securityTabContent.className = 'securityContent'
-        securityTabContent.textContent = securityTab
-        securityTabContent.setAttribute("tabindex","1")
-        targetContainer.appendChild(securityTabContent)
+       // securityTabContent corresponds w/ 1
+       let securityTabContent = document.createElement('div')
+       securityTabContent.className = 'securityContent'
+       // securityTabContent.textContent = securityTab
+       securityTabContent.innerHTML = "<ul><li>" +  securityTab + "</li> </ul>"
+       securityTabContent.setAttribute("tabindex","1")
+       targetContainer.appendChild(securityTabContent)
 
-        // resourcesTabContent corresponds w/ 2
-        let resourcesTabContent = document.createElement('div')
-        resourcesTabContent.className = 'resourcesContent'
-        resourcesTabContent.textContent = resourcesTab
-        resourcesTabContent.setAttribute("tabindex","2")
-        targetContainer.appendChild(resourcesTabContent)
+       // resourcesTabContent corresponds w/ 2
+       let resourcesTabContent = document.createElement('div')
+       resourcesTabContent.className = 'resourcesContent'
+       // resourcesTabContent.textContent = resourcesTab
+       resourcesTabContent.innerHTML = "<ul><li>" + resourcesTab + "</li> </ul>"
+       resourcesTabContent.setAttribute("tabindex","2")
+       targetContainer.appendChild(resourcesTabContent)
 
-        // notRentingTabContent corresponds w/ 3
-        let notRentingTabContent = document.createElement('div')
-        notRentingTabContent.className = 'notRentingContent'
-        notRentingTabContent.textContent = notRentingTab
-        notRentingTabContent.setAttribute("tabindex","3")
-        targetContainer.appendChild(notRentingTabContent)
+       // notRentingTabContent corresponds w/ 3
+       let notRentingTabContent = document.createElement('div')
+       notRentingTabContent.className = 'notRentingContent'
+       // notRentingTabContent.textContent = notRentingTab
+       notRentingTabContent.innerHTML = "<ul><li>" + notRentingTab + "</li> </ul>"
+       notRentingTabContent.setAttribute("tabindex","3")
+       targetContainer.appendChild(notRentingTabContent)
 
         sideBarText.appendChild(thisZipcode)
         return thisZipcode//.textContent
