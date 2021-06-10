@@ -1,6 +1,7 @@
 //variable declarations
 let id = 0;//create a unique id for each survey response object
-let objectArray = [];//create an array to store the objects
+//let objectArray = [];//create an array to store the objects
+    //^i don't think we ever use this array
 
 //-----------------------------------------
 //--------------------MAP LAYERS----------
@@ -84,7 +85,7 @@ function processData(theData){
 //create survey response object
 function createObject(data, id){
     let thisData = {
-        "id": id + 1,
+        "id": id + 1,//object IDs start at '1'
         "lat": data.lat,
         "lng": data.lng,
         "time":data.timestamp,
@@ -113,7 +114,8 @@ function createObject(data, id){
     let thisPoint = turf.point([Number(data.lng),Number(data.lat)],{thisData})// create the turfJS point
     allPoints.push(thisPoint)// put all the turfJS points into `allPoints`
 
-    objectArray.push(thisData);//add object to global array objectArray
+    //objectArray.push(thisData);//add object to global array objectArray
+    //^i don't think we ever use this array
     popMap(thisData);
 }
 
