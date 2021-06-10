@@ -275,10 +275,10 @@ function getSurveyInfo(survey){
             notRentingTab = "";
             if (survey.harassmentYN){
                 if (survey.harassment != ""){
-                    harassmentTab = survey.harassment
+                    harassmentTab = "<ul><li>" + survey.harassment  + "</li> </ul>"
                 }
                 else{
-                    harassmentTab = "[This tenant has experienced harassment and did not share a story.]"
+                    harassmentTab = "<ul><li>" + "[This tenant has experienced harassment and did not share a story.]" + "</li> </ul>"
                 }
             }
             else{
@@ -286,21 +286,21 @@ function getSurveyInfo(survey){
             }
             if (survey.secureYN){
                 if (survey.insecurity != ""){
-                    securityTab = survey.insecurity
+                    securityTab = "<ul><li>" +  survey.insecurity + "</li> </ul>"
                 }
                 else{
-                    securityTab = "[This tenant has experienced housing insecurity and did not share a story.]"
+                    securityTab = "<ul><li>" +  "[This tenant has experienced housing insecurity and did not share a story.]" + "</li> </ul>"
                 }
             }
             if (survey.resources){
-                resourcesTab = survey.resources
+                resourcesTab = "<ul><li>" + survey.resources + "</li> </ul>"
             }
             else{
                 resourcesTab = ""; // empty string :)
             }
         }
         else{
-            notRentingTab = survey.reasons
+            notRentingTab = "<ul><li>" +survey.reasons  + "</li> </ul>"
         }
 
         let surveyID = "survey_" + survey.id
@@ -324,7 +324,7 @@ function getSurveyInfo(survey){
        let harassmentTabContent = document.createElement('div')
        harassmentTabContent.className = 'harassmentContent'
        //harassmentTabContent.textContent = harassmentTab
-       harassmentTabContent.innerHTML = "<ul><li>" + harassmentTab + "</li> </ul>"
+       harassmentTabContent.innerHTML = harassmentTab
        harassmentTabContent.setAttribute("tabindex","0")
        targetContainer.appendChild(harassmentTabContent)
 
@@ -332,7 +332,7 @@ function getSurveyInfo(survey){
        let securityTabContent = document.createElement('div')
        securityTabContent.className = 'securityContent'
        // securityTabContent.textContent = securityTab
-       securityTabContent.innerHTML = "<ul><li>" +  securityTab + "</li> </ul>"
+       securityTabContent.innerHTML = securityTab
        securityTabContent.setAttribute("tabindex","1")
        targetContainer.appendChild(securityTabContent)
 
@@ -340,7 +340,7 @@ function getSurveyInfo(survey){
        let resourcesTabContent = document.createElement('div')
        resourcesTabContent.className = 'resourcesContent'
        // resourcesTabContent.textContent = resourcesTab
-       resourcesTabContent.innerHTML = "<ul><li>" + resourcesTab + "</li> </ul>"
+       resourcesTabContent.innerHTML = resourcesTab
        resourcesTabContent.setAttribute("tabindex","2")
        targetContainer.appendChild(resourcesTabContent)
 
@@ -348,7 +348,7 @@ function getSurveyInfo(survey){
        let notRentingTabContent = document.createElement('div')
        notRentingTabContent.className = 'notRentingContent'
        // notRentingTabContent.textContent = notRentingTab
-       notRentingTabContent.innerHTML = "<ul><li>" + notRentingTab + "</li> </ul>"
+       notRentingTabContent.innerHTML =  notRentingTab
        notRentingTabContent.setAttribute("tabindex","3")
        targetContainer.appendChild(notRentingTabContent)
 
