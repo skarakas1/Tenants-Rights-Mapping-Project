@@ -1,6 +1,8 @@
 # Tenants' Rights Mapping Project
 This is the project of Ray Hsiao, Brian Zamora, and Sam Karakas for Asian American Studies 191A, taught by Albert Kochaphum. Access the website [here](https://skarakas1.github.io/Tenants-Rights-Mapping-Project/). (Ideally, we'd lead you to the landing page where you can select what language of the site you want to view, but that's not complete yet.)
 
+**IMPORTANT NOTE:** Google Sheets deprecated their API, so our project does not work right now. We will be converting our CSV file to a JSON with [PapaParse](https://www.papaparse.com/).
+
 ## Table of Contents
 * [Objective](#objective)
 * [Who is being empowered](#who-is-being-empowered)
@@ -18,7 +20,7 @@ We aim to address communities in the broader Los Angeles area, with existing or 
 
 
 ## What technology was used
-We are using Github Pages for free website hosting and our code is displayed publicly on Github. The survey is in Google Forms and responses are stored in Google Sheets. We geocoded the zip codes with Google Apps Script. The auto-translations are provided by Google translate.
+We are using [Github Pages](https://pages.github.com/) for free website hosting and our code is displayed publicly on Github. The survey is in Google Forms and responses are stored in Google Sheets. We geocoded the zip codes with Google Apps Script. The auto-translations are provided by Google translate. We also used the [Leaflet JS library](https://leafletjs.com/).
 
 There are three pages on the site right now: the main page, the landing page, and a survey page. Each has their own HTML file and corresponding JS and CSS files.
 
