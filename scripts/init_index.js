@@ -7,6 +7,20 @@ let harassmentLayer = L.featureGroup();
 let insecureLayer = L.featureGroup();
 let resourcesLayer = L.featureGroup();
 
+// path to csv data for PapaParse
+let path = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQe0rbmYPXqqD5qombSk6oNuGWmuFcQQbCJRiDxfMX1ORQDPpaI_H0-SKBPtFE2mEus-el2uB_XrwaL/pub?gid=1404160027&single=true&output=csv";
+// PapaParse to convert CSV to JSON
+function readCSV(path){
+	Papa.parse(path, {
+		header: true,
+		download: true,
+		complete: function(csvdata) {
+			console.log(csvdata);
+			
+		}
+	});
+}
+
 // define layers
 let layers = {
     "All Responses": totalResponseLayer,
