@@ -20,7 +20,7 @@ We aim to address communities in the broader Los Angeles area, with existing or 
 
 
 ## What technology was used
-We are using [Github Pages](https://pages.github.com/) for free website hosting and our code is displayed publicly on Github. The survey is in Google Forms and responses are stored in Google Sheets. We geocoded the zip codes with Google Apps Script. The auto-translations are provided by Google translate. We also used the [Leaflet JS library](https://leafletjs.com/).
+We are using [Github Pages](https://pages.github.com/) for free website hosting and our code is displayed publicly on Github. The survey is in Google Forms and responses are stored in Google Sheets. We geocoded the zip codes with Google Apps Script. The auto-translations are provided by Google translate. We also used the [Leaflet JS library](https://leafletjs.com/) and [Turf.js](https://turfjs.org/).
 
 There are three pages on the site right now: the main page, the landing page, and a survey page. Each has their own HTML file and corresponding JS and CSS files.
 
